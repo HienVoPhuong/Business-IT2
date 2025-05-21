@@ -301,11 +301,11 @@ with col_a:
     st.markdown(
         f"""
         <div class="insight-box" style="padding:20px; background-color:#f9f9f9; border-left: 5px solid #6C63FF; border-radius:10px; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.05);">
-            <h3 style="margin-top:0; color:#333;">General Insights</h3>
+            <h3 style="margin-top:0; color:#333;">🔸General Insights</h3>
             <p style="font-size:16px;">{pie_en}</p>
             <p style="font-size:16px;">{ridge_en}</p>
             <hr style="margin:15px 0;">
-            <p style="font-size:14px;"><strong>Stress Level Legend:</strong><br>
+            <p style="font-size:14px;"><strong>🔸Stress Level Legend:</strong><br>
                 <span style="color:#668fd4; font-weight:bold;">Low &lt; 5</span> |
                 <span style="color:#fa9850; font-weight:bold;">Moderate 5 - 6.99</span> |
                 <span style="color:#e4444e; font-weight:bold;">High ≥ 7</span>
