@@ -1,0 +1,11 @@
+streamlit
+streamlit-extras
+pandas
+numpy
+streamlit-lottie
+matplotlib.pyplot
+joypy
+time
+plotly.express
+base64
+streamlit.components.v1
