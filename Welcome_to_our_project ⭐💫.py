@@ -1,7 +1,7 @@
 import streamlit as st
 import base64
 
-# Cấu hình trang
+# --- PAGE CONFIG ---
 st.set_page_config(page_title="Sleep Health", layout="wide", initial_sidebar_state="collapsed")
 
 # Import Google Fonts
@@ -9,7 +9,7 @@ st.markdown("""
 <link href="https://fonts.googleapis.com/css2?family=Lato&family=Playfair+Display&display=swap" rel="stylesheet">
 """, unsafe_allow_html=True)
 
-# Thiết lập nền và CSS pastel vintage
+# ---SET UP BACKGROUND---
 
 def set_background_with_overlay(image_file):
     with open(image_file, "rb") as f:
