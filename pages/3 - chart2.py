@@ -4,7 +4,44 @@ import plotly.express as px
 
 # --------- Page Configuration ---------
 st.set_page_config(page_title="Stress & Sleep Dashboard", layout="wide")
+# -------------------- CUSTOM CSS EFFECT --------------------
+st.markdown("""
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translate3d(0, 20px, 0);
+            }
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
 
+        .fade-in-section {
+            animation: fadeInUp 0.8s ease-in-out;
+        }
+
+        .insight-box:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-4px);
+            transition: all 0.3s ease;
+        }
+
+        .insight-box {
+            transition: all 0.3s ease;
+        }
+
+        .stDataFrame thead tr th {
+            background-color: #f0f2f6;
+            color: #333;
+        }
+
+        .stDataFrame tbody tr:hover {
+            background-color: #f6f6f6;
+        }
+    </style>
+""", unsafe_allow_html=True)
 # --------- Font Styling ---------
 st.markdown("""
    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&display=swap" rel="stylesheet">
