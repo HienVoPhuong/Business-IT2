@@ -65,11 +65,11 @@ st.subheader("👨‍💻 Our Team")
 
 # Team data (tách riêng role nếu có)
 team = [
-    {"name": " Võ Phương Hiền<br>--Group leader--", "id": "106240134", "image": "Hien.jpg"},
-    {"name": " Đoàn Mai Khánh Ngọc<br>--Member--", "id": "103240413", "image": "Ngoc.jpg"},
-    {"name": " Nguyễn Thụy Vân Quỳnh<br>--Member--", "id": "106240331", "image": "quynh.jpg"},
-    {"name": " Phạm Gia Linh<br>--Member--", "id": "103240155", "image": "linh.jpg"},
-    {"name": " Võ Anh Kiệt<br>--Member--", "id": "106240395", "image": "kiet.jpg"}
+    {"name": " Võ Phương Hiền", "id": "106240134", "image": "Hien.jpg"},
+    {"name": " Đoàn Mai Khánh Ngọc", "id": "103240413", "image": "Ngoc.jpg"},
+    {"name": " Nguyễn Thụy Vân Quỳnh", "id": "106240331", "image": "quynh.jpg"},
+    {"name": " Phạm Gia Linh", "id": "103240155", "image": "linh.jpg"},
+    {"name": " Võ Anh Kiệt", "id": "106240395", "image": "kiet.jpg"}
 ]
 
 # Load and encode images
