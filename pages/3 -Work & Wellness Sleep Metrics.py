@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px
 
 # --------- Page Configuration ---------
-st.set_page_config(page_title="Occupational Sleep Trends & Cardiovascular Metrics", layout="wide")
+st.set_page_config(page_title="💗 Occupational Sleep Trends & Cardiovascular Metrics", layout="wide")
 
 # --------- Font Styling ---------
 st.markdown("""
