@@ -6,7 +6,7 @@ import joypy
 import time
 
 # -------------------- PAGE CONFIG --------------------
-st.set_page_config(page_title="Sleep Analysis Dashboard", layout="wide")
+st.set_page_config(page_title="Sleep & Stress Risk Analysis", layout="wide")
 
 # --------- GLOBAL FONT STYLING ---------
 st.markdown("""
