@@ -9,7 +9,7 @@ from streamlit.components.v1 import html
 
 
 # --- PAGE CONFIG ---
-st.set_page_config(page_title="Sleep Health & Lifestyle", page_icon="😴", layout="wide")
+st.set_page_config(page_title="😴 Sleep Health & Lifestyle", layout="wide")
 
 # --- FONTS ---
 st.markdown("""
