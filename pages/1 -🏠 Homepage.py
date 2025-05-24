@@ -9,15 +9,18 @@ from streamlit.components.v1 import html
 
 
 # --- PAGE CONFIG ---
-st.set_page_config(page_title="😴 Sleep Health & Lifestyle", layout="wide")
+st.set_page_config(page_title="Sleep Health & Lifestyle", page_icon="😴", layout="wide")
 
-
-# --- CUSTOM FONT FOR TITLE ---
+# --- FONTS ---
 st.markdown("""
+<link href="https://fonts.googleapis.com/css2?family=Merriweather&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Poetsen+One&display=swap" rel="stylesheet">
 <style>
+html, body, p, span, div, h1, h2, h3, h4, h5, h6 {
+    font-family: 'Merriweather', serif !important;
+}
 .poetsen-title {
-  font-family: 'Poetsen One', cursive;
+  font-family: 'Poetsen One', cursive !important;
   font-size: 70px;
   color: #007BFF;
   text-align: center;
@@ -25,11 +28,17 @@ st.markdown("""
   border-radius: 12px;
 }
 </style>
+""", unsafe_allow_html=True)
+
+# --- TITLE ---
+st.markdown("""
 <div class="poetsen-title">
-  Sleep Health & Lifestyle 
+  Sleep Health & Lifestyle
 </div>
 """, unsafe_allow_html=True)
 st.markdown("<h3 style='text-align: center;'>A Business IT 2 Data Project</h3>", unsafe_allow_html=True)
+
+
 
 # --- LOTTIE LOADER ---
 def load_lottie_file(filepath: str):
@@ -63,27 +72,39 @@ st_lottie(lottie_animation, height=300, key="header_lottie")
 st.markdown("<div id='team'></div>", unsafe_allow_html=True)
 st.subheader("👨‍💻 Our Team")
 
-# Team data (tách riêng role nếu có)
+
+
+
 team = [
-    {"name": " Võ Phương Hiền<br>--Group leader--", "id": "106240134", "image": "Hien.jpg"},
-    {"name": " Đoàn Mai Khánh Ngọc<br>--Member--", "id": "103240413", "image": "Ngoc.jpg"},
-    {"name": " Nguyễn Thụy Vân Quỳnh<br>--Member--", "id": "106240331", "image": "quynh.jpg"},
-    {"name": " Phạm Gia Linh<br>--Member--", "id": "103240155", "image": "linh.jpg"},
-    {"name": " Võ Anh Kiệt<br>--Member--", "id": "106240395", "image": "kiet.jpg"}
+    {"name": " Võ Phương Hiền", "id": "106240134", "image": "Hien.jpg"},
+    {"name": " Đoàn Mai Khánh Ngọc", "id": "103240413", "image": "Ngoc.jpg"},
+    {"name": " Nguyễn Thụy Vân Quỳnh", "id": "106240331", "image": "quynh.jpg"},
+    {"name": " Phạm Gia Linh", "id": "103240155", "image": "linh.jpg"},
+    {"name": " Võ Anh Kiệt", "id": "106240395", "image": "kiet.jpg"}
 ]
 
-# Load and encode images
+
+
+
 team_html = """
 <style>
 .team-wrapper {
+    display: grid;
+    place-items: center;
     overflow-x: auto;
     padding-bottom: 1rem;
+    width: 100%;
 }
+
+
 .team-container {
     display: flex;
     flex-wrap: nowrap;
     gap: 1.2rem;
+    min-width: max-content;
 }
+
+
 .team-card {
     flex: 0 0 auto;
     width: 220px;
@@ -93,9 +114,17 @@ team_html = """
     text-align: center;
     transition: transform 0.3s;
 }
+
+
+
+
 .team-card:hover {
     transform: scale(1.06);
 }
+
+
+
+
 .team-card img {
     width: 100%;
     height: 220px;
@@ -103,20 +132,32 @@ team_html = """
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
 }
+
+
+
+
 .team-card h4 {
     margin: 10px 0 5px 0;
     font-weight: 700;
+    font-size: 1.1rem;
     color: #333;
 }
+
+
+
+
 .team-card p {
     font-style: italic;
     margin-bottom: 10px;
+    font-size: 1.1rem;
     color: #777;
 }
 </style>
 <div class='team-wrapper'>
 <div class='team-container'>
 """
+
+
 
 
 for member in team:
@@ -128,20 +169,21 @@ for member in team:
         img_src = "https://via.placeholder.com/220x220.png?text=No+Image"
 
 
+
+
     team_html += f"""
     <div class='team-card'>
-        <img src="{img_src}" alt="{member["name"]}">
-        <h4>{member["name"]}</h4>
-        <p>{member["id"]}</p>
+        <img src="{img_src}" alt="{member['name']}">
+        <h4>{member['name']}</h4>
+        <p>{member['id']}</p>
     </div>
     """
 
 
+
+
 team_html += "</div></div>"
-
-
-html(team_html, height=350, scrolling=True)
-
+html(team_html, height=350, scrolling=False)
 
 # --- CONTACT SECTION ---
 st.markdown("<div id='contact'></div>", unsafe_allow_html=True)
