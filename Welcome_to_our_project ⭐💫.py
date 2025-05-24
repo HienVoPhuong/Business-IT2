@@ -179,7 +179,7 @@ def show_landing():
             st.rerun()
 
 def show_main_app():
-    st.switch_page("pages/1 - Homepage.py")
+    st.switch_page("pages/1 -🏠 Homepage.py")
 
 def main():
     set_background_with_overlay("cafe.jpg")
