@@ -8,17 +8,21 @@ import time
 # -------------------- PAGE CONFIG --------------------
 st.set_page_config(page_title=" Sleep & Stress Risk Analysis", layout="wide")
 
-# --------- GLOBAL FONT STYLING ---------
 st.markdown("""
    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
    <style>
        html, body, [class*="st-"], .stApp {
            font-family: 'Merriweather', serif !important;
        }
-       h1, h2, h3, h4, h5, h6, p, span, div {
+
+       h1, h2, h3, h4, h5, h6, p, span, div, label, section {
            font-family: 'Merriweather', serif !important;
        }
-       .stButton>button, .stTextInput>div>input, .stSelectbox>div>div, .stMultiSelect>div>div {
+
+       .stButton>button, .stTextInput>div>input,
+       .stSelectbox>div>div, .stMultiSelect>div>div,
+       .stSlider, .stSlider>div>div, .stSlider>div>div>div,
+       .stSidebar, .stSidebarContent {
            font-family: 'Merriweather', serif !important;
        }
    </style>
