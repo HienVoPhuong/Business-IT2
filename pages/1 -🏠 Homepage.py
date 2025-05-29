@@ -67,7 +67,7 @@ st.markdown(
        font-family: "Merriweather", serif;
        font-weight: 400;
    '>
-       A Business IT 2 Data Project
+      A Data Project in Business IT 2
    </p>
    """,
    unsafe_allow_html=True)
@@ -112,9 +112,9 @@ rain(emoji="💤", font_size=44, falling_speed=5, animation_length="2")
 # --- INTRO WITH TYPING ---
 with st.empty():
     for line in [
-        "We explore how your sleep impacts your life.",
+        "We analyze how sleep patterns correlate with well-being.",
         "Data meets wellness through interactive insights.",
-        "Unlock better health through awareness and habits."
+        "A visual exploration of sleep data — discover patterns, trends, and insights from real-world sources."
     ]:
         st.write(f"### ✨ {line}")
         time.sleep(1.5)
