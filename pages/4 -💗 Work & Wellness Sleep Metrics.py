@@ -18,11 +18,11 @@ st.markdown("""
        .stButton>button, .stTextInput>div>input, .stSelectbox>div>div, .stMultiSelect>div>div {
            font-family: 'Merriweather', serif !important;
        }
+
        .hover-box {
            transition: all 0.3s ease;
        }
        .hover-box:hover {
-           background-color: #f0f4ff !important;
            transform: translateY(-4px);
            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
        }
