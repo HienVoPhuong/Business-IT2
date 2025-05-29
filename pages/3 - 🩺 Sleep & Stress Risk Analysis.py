@@ -6,23 +6,27 @@ import joypy
 import time
 
 # -------------------- PAGE CONFIG --------------------
-st.set_page_config(page_title=" Sleep & Stress Risk Analysis", layout="wide")
-
 st.markdown("""
    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
    <style>
-       html, body, [class*="st-"], .stApp {
+     
+       html, body, [class*="st-"], .stApp, .stSidebar, .stSidebarContent {
            font-family: 'Merriweather', serif !important;
        }
 
-       h1, h2, h3, h4, h5, h6, p, span, div, label, section {
+      
+       h1, h2, h3, h4, h5, h6, p, span, div, label, section, input, textarea, select {
            font-family: 'Merriweather', serif !important;
        }
 
-       .stButton>button, .stTextInput>div>input,
-       .stSelectbox>div>div, .stMultiSelect>div>div,
-       .stSlider, .stSlider>div>div, .stSlider>div>div>div,
-       .stSidebar, .stSidebarContent {
+      
+       .stButton>button,
+       .stTextInput>div>input,
+       .stSelectbox>div>div,
+       .stMultiSelect>div>div,
+       .stSlider,
+       .stSlider>div>div,
+       .stSlider>div>div>div {
            font-family: 'Merriweather', serif !important;
        }
    </style>
