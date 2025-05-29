@@ -8,35 +8,82 @@ import json
 from streamlit.components.v1 import html
 
 
+
+
 # --- PAGE CONFIG ---
-st.set_page_config(page_title="Sleep Health & Lifestyle", page_icon="😴", layout="wide")
+st.set_page_config(page_title="Sleep Health & Lifestyle", page_icon="🛌", layout="wide")
 
-# --- FONTS ---
+
+
+
+# --------- Font Styling ---------
 st.markdown("""
-<link href="https://fonts.googleapis.com/css2?family=Merriweather&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Poetsen+One&display=swap" rel="stylesheet">
-<style>
-html, body, p, span, div, h1, h2, h3, h4, h5, h6 {
-    font-family: 'Merriweather', serif !important;
-}
-.poetsen-title {
-  font-family: 'Poetsen One', cursive !important;
-  font-size: 70px;
-  color: #007BFF;
-  text-align: center;
-  padding: 40px;
-  border-radius: 12px;
-}
-</style>
+   <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+   <style>
+       html, body, [class*="st-"], .stApp {
+           font-family: 'Merriweather', serif !important;
+       }
+       h1, h2, h3, h4, h5, h6, p, span, div {
+           font-family: 'Merriweather', serif !important;
+       }
+       .stButton>button, .stTextInput>div>input, .stSelectbox>div>div, .stMultiSelect>div>div {
+           font-family: 'Merriweather', serif !important;
+       }
+       .colatin-title {
+           font-family: 'Lobster', cursive !important;
+           font-size: 3.5em;
+           font-weight: 700;
+           text-align: center;
+           background: -webkit-linear-gradient(45deg, #6C63FF, #20B2AA);
+           -webkit-background-clip: text;
+           -webkit-text-fill-color: transparent;
+           padding: 40px;
+           border-radius: 12px;
+       }
+   </style>
 """, unsafe_allow_html=True)
 
-# --- TITLE ---
-st.markdown("""
-<div class="poetsen-title">
-  Sleep Health & Lifestyle
-</div>
-""", unsafe_allow_html=True)
-st.markdown("<h3 style='text-align: center;'>A Business IT 2 Data Project</h3>", unsafe_allow_html=True)
+
+st.markdown('''
+   <div class="fade-in-section">
+       <h1 style='text-align: center;
+                  background: -webkit-linear-gradient(45deg, #6C63FF, #20B2AA);
+                  -webkit-background-clip: text;
+                  -webkit-text-fill-color: transparent;
+                  font-weight: 750;
+                  font-size: 4.5em; 'class="colatin-title">Sleep Health and Lifestyle</h1>
+   </div>
+''', unsafe_allow_html=True)
+
+
+
+
+st.markdown(
+   """
+   <p style='
+       text-align: center;
+       font-size:25px;
+       font-family: "Merriweather", serif;
+       font-weight: 400;
+   '>
+       A Business IT 2 Data Project
+   </p>
+   """,
+   unsafe_allow_html=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -46,13 +93,23 @@ def load_lottie_file(filepath: str):
         return json.load(f)
 
 
+
+
+
+
+
+
 # --- RAIN EFFECT ---
 rain(emoji="💤", font_size=44, falling_speed=5, animation_length="2")
 
 
 
 
-# --- INTRO WITH TYPING STYLE ---
+
+
+
+
+# --- INTRO WITH TYPING ---
 with st.empty():
     for line in [
         "We explore how your sleep impacts your life.",
@@ -63,14 +120,30 @@ with st.empty():
         time.sleep(1.5)
 
 
+
+
+
+
+
+
 # --- HEADER ANIMATION ---
 lottie_animation = load_lottie_file("sleepy.json")
 st_lottie(lottie_animation, height=300, key="header_lottie")
 
 
+
+
+
+
+
+
 # --- TEAM SECTION ---
 st.markdown("<div id='team'></div>", unsafe_allow_html=True)
 st.subheader("👨‍💻 Our Team")
+
+
+
+
 
 
 
@@ -86,6 +159,10 @@ team = [
 
 
 
+
+
+
+
 team_html = """
 <style>
 .team-wrapper {
@@ -97,12 +174,16 @@ team_html = """
 }
 
 
+
+
 .team-container {
     display: flex;
     flex-wrap: nowrap;
     gap: 1.2rem;
     min-width: max-content;
 }
+
+
 
 
 .team-card {
@@ -118,9 +199,17 @@ team_html = """
 
 
 
+
+
+
+
 .team-card:hover {
     transform: scale(1.06);
 }
+
+
+
+
 
 
 
@@ -136,12 +225,20 @@ team_html = """
 
 
 
+
+
+
+
 .team-card h4 {
     margin: 10px 0 5px 0;
     font-weight: 700;
     font-size: 1.1rem;
     color: #333;
 }
+
+
+
+
 
 
 
@@ -160,6 +257,10 @@ team_html = """
 
 
 
+
+
+
+
 for member in team:
     try:
         with open(member["image"], "rb") as img_file:
@@ -167,6 +268,10 @@ for member in team:
         img_src = f"data:image/jpeg;base64,{img_base64}"
     except:
         img_src = "https://via.placeholder.com/220x220.png?text=No+Image"
+
+
+
+
 
 
 
@@ -182,8 +287,19 @@ for member in team:
 
 
 
+
+
+
+
 team_html += "</div></div>"
 html(team_html, height=350, scrolling=False)
+
+
+
+
+
+
+
 
 # --- CONTACT SECTION ---
 st.markdown("<div id='contact'></div>", unsafe_allow_html=True)
@@ -191,8 +307,20 @@ st.subheader("📬 Contact Us")
 st.caption("Got a question or feedback? We’d love to hear from you!")
 
 
+
+
+
+
+
+
 contact_animation = load_lottie_file("contact.json")
 st_lottie(contact_animation, height=200, key="contact_anim")
+
+
+
+
+
+
 
 
 st.markdown("""
@@ -208,7 +336,23 @@ st.markdown("""
     </form>
 </div>
 """, unsafe_allow_html=True)
-     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
