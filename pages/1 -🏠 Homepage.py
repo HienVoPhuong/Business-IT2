@@ -7,44 +7,55 @@ import time
 import json
 from streamlit.components.v1 import html
 
-
-
-
 # --- PAGE CONFIG ---
 st.set_page_config(page_title="Sleep Health & Lifestyle", page_icon="🛌", layout="wide")
 
-
-
-
-# --------- Font Styling ---------
+# --- CUSTOM FONTS & SIDEBAR CSS ---
 st.markdown("""
-   <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
-   <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
-   <style>
-       html, body, [class*="st-"], .stApp {
-           font-family: 'Merriweather', serif !important;
-       }
-       h1, h2, h3, h4, h5, h6, p, span, div {
-           font-family: 'Merriweather', serif !important;
-       }
-       .stButton>button, .stTextInput>div>input, .stSelectbox>div>div, .stMultiSelect>div>div {
-           font-family: 'Merriweather', serif !important;
-       }
-       .colatin-title {
-           font-family: 'Lobster', cursive !important;
-           font-size: 3.5em;
-           font-weight: 700;
-           text-align: center;
-           background: -webkit-linear-gradient(45deg, #6C63FF, #20B2AA);
-           -webkit-background-clip: text;
-           -webkit-text-fill-color: transparent;
-           padding: 40px;
-           border-radius: 12px;
-       }
-   </style>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Lobster&display=swap" rel="stylesheet">
+    <style>
+    html, body, [class*="st-"], .stApp {
+        font-family: 'Merriweather', serif !important;
+    }
+    h1, h2, h3, h4, h5, h6, p, span, div {
+        font-family: 'Merriweather', serif !important;
+    }
+    .colatin-title {
+        font-family: 'Lobster', cursive !important;
+        font-size: 3.5em;
+        font-weight: 700;
+        text-align: center;
+        background: -webkit-linear-gradient(45deg, #6C63FF, #20B2AA);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        padding: 40px;
+        border-radius: 12px;
+    }
+    /* Sidebar */
+    section[data-testid="stSidebar"] {
+        background: linear-gradient(135deg, #f7f8fc, #e6f0ff);
+        border-right: 2px solid #f0f0f0;
+    }
+    [data-testid="stSidebarNav"] {
+        padding-top: 0.5rem;
+    }
+    .css-1v3fvcr, .css-1y4p8pa {
+        font-size: 17px;
+        font-family: 'Merriweather', serif;
+        padding: 12px;
+        margin: 5px 8px;
+        border-radius: 10px;
+        transition: all 0.2s ease-in-out;
+    }
+    .css-1v3fvcr:hover, .css-1y4p8pa:hover {
+        background-color: #e0e7ff;
+        color: #3b49df;
+        transform: scale(1.02);
+    }
+    </style>
 """, unsafe_allow_html=True)
 
-
+# --- TITLE ---
 st.markdown('''
    <div class="fade-in-section">
        <h1 style='text-align: center;
@@ -52,15 +63,12 @@ st.markdown('''
                   -webkit-background-clip: text;
                   -webkit-text-fill-color: transparent;
                   font-weight: 750;
-                  font-size: 4.5em; 'class="colatin-title">Sleep Health and Lifestyle</h1>
+                  font-size: 4.5em;' class="colatin-title">Sleep Health and Lifestyle</h1>
    </div>
 ''', unsafe_allow_html=True)
 
-
-
-
-st.markdown(
-   """
+# --- SUBTITLE ---
+st.markdown("""
    <p style='
        text-align: center;
        font-size:25px;
@@ -69,47 +77,17 @@ st.markdown(
    '>
       A Data Project in Business IT 2
    </p>
-   """,
-   unsafe_allow_html=True)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+""", unsafe_allow_html=True)
 
 # --- LOTTIE LOADER ---
 def load_lottie_file(filepath: str):
     with open(filepath, "r") as f:
         return json.load(f)
 
-
-
-
-
-
-
-
 # --- RAIN EFFECT ---
 rain(emoji="💤", font_size=44, falling_speed=5, animation_length="2")
 
-
-
-
-
-
-
-
-# --- INTRO WITH TYPING ---
+# --- INTRO TYPING ---
 with st.empty():
     for line in [
         "We analyze how sleep patterns correlate with well-being.",
@@ -119,34 +97,13 @@ with st.empty():
         st.write(f"### ✨ {line}")
         time.sleep(1.5)
 
-
-
-
-
-
-
-
 # --- HEADER ANIMATION ---
 lottie_animation = load_lottie_file("sleepy.json")
 st_lottie(lottie_animation, height=300, key="header_lottie")
 
-
-
-
-
-
-
-
 # --- TEAM SECTION ---
 st.markdown("<div id='team'></div>", unsafe_allow_html=True)
 st.subheader("👨‍💻 Our Team")
-
-
-
-
-
-
-
 
 team = [
     {"name": " Võ Phương Hiền", "id": "106240134", "image": "Hien.jpg"},
@@ -155,13 +112,6 @@ team = [
     {"name": " Phạm Gia Linh", "id": "103240155", "image": "linh.jpg"},
     {"name": " Võ Anh Kiệt", "id": "106240395", "image": "kiet.jpg"}
 ]
-
-
-
-
-
-
-
 
 team_html = """
 <style>
@@ -172,20 +122,12 @@ team_html = """
     padding-bottom: 1rem;
     width: 100%;
 }
-
-
-
-
 .team-container {
     display: flex;
     flex-wrap: nowrap;
     gap: 1.2rem;
     min-width: max-content;
 }
-
-
-
-
 .team-card {
     flex: 0 0 auto;
     width: 220px;
@@ -195,25 +137,9 @@ team_html = """
     text-align: center;
     transition: transform 0.3s;
 }
-
-
-
-
-
-
-
-
 .team-card:hover {
     transform: scale(1.06);
 }
-
-
-
-
-
-
-
-
 .team-card img {
     width: 100%;
     height: 220px;
@@ -221,28 +147,12 @@ team_html = """
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
 }
-
-
-
-
-
-
-
-
 .team-card h4 {
     margin: 10px 0 5px 0;
     font-weight: 700;
     font-size: 1.1rem;
     color: #333;
 }
-
-
-
-
-
-
-
-
 .team-card p {
     font-style: italic;
     margin-bottom: 10px;
@@ -254,13 +164,6 @@ team_html = """
 <div class='team-container'>
 """
 
-
-
-
-
-
-
-
 for member in team:
     try:
         with open(member["image"], "rb") as img_file:
@@ -268,13 +171,6 @@ for member in team:
         img_src = f"data:image/jpeg;base64,{img_base64}"
     except:
         img_src = "https://via.placeholder.com/220x220.png?text=No+Image"
-
-
-
-
-
-
-
 
     team_html += f"""
     <div class='team-card'>
@@ -284,44 +180,16 @@ for member in team:
     </div>
     """
 
-
-
-
-
-
-
-
 team_html += "</div></div>"
 html(team_html, height=350, scrolling=False)
-
-
-
-
-
-
-
 
 # --- CONTACT SECTION ---
 st.markdown("<div id='contact'></div>", unsafe_allow_html=True)
 st.subheader("📬 Contact Us")
 st.caption("Got a question or feedback? We’d love to hear from you!")
 
-
-
-
-
-
-
-
 contact_animation = load_lottie_file("contact.json")
 st_lottie(contact_animation, height=200, key="contact_anim")
-
-
-
-
-
-
-
 
 st.markdown("""
 <div style='background-color: rgba(255, 245, 230, 0.9); padding: 30px; border-radius: 20px; box-shadow: 0 6px 18px rgba(0,0,0,0.1); max-width: 600px; margin: auto; animation: bounceIn 1.2s;'>
@@ -336,23 +204,3 @@ st.markdown("""
     </form>
 </div>
 """, unsafe_allow_html=True)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
