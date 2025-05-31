@@ -12,19 +12,7 @@ st.markdown("""
 
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&display=swap');
 
-/* Áp dụng font Merriweather cho toàn bộ trang */
-html, body, [class*="css"], .stApp, 
-[class*="css"] > *, /* Các phần tử con của các class css */
-.stButton button, /* nút bấm */
-.stTextInput>div>div>input, /* input text */
-.stTextArea>div>div>textarea, /* textarea */
-.stSelectbox>div>div>div>select, /* selectbox */
-.stCheckbox>div>label, /* checkbox */
-.stRadio>div>label, /* radio */
-.stSlider>div>input, /* slider input */
-.stSidebar, /* sidebar container */
-.stSidebar div, /* sidebar con */
-.css-1d391kg, .css-1aumxhk, .css-1adrfps, .css-1v3fvcr {
+html, body, [class*="css"] {
    font-family: 'Merriweather', serif !important;
 }
 
@@ -320,33 +308,93 @@ st.markdown(
    </div>
    """, unsafe_allow_html=True
 )
+# ====== LOAD DATA ======
+@st.cache_data
+def load_data():
+   df = pd.read_excel("Sleep Health Lifestyle Dataset.xlsx")
+   df.columns = df.columns.str.strip().str.replace(" ", "_")
+   return df
 
-# ====== VARIABLE DETAILS ======
+df = load_data()
+
+# ====== SIDEBAR FILTER ======
+with st.sidebar:
+   st.markdown("<h3 style='font-family: Georgia, serif; color:#004a99;'> Filter Dataset</h3>", unsafe_allow_html=True)
+   select_all = st.checkbox("Select All", value=False)
+
+   nationality_options = sorted(df["Nationality"].dropna().unique().tolist())
+   gender_options = sorted(df["Gender"].dropna().unique().tolist())
+   age_options = sorted(df["Age"].dropna().unique().astype(int))
+
+   if select_all:
+       selected_nationalities = nationality_options
+       selected_genders = gender_options
+       selected_ages = [str(age) for age in age_options]
+   else:
+       selected_nationalities = st.multiselect("Select Nationality", options=nationality_options)
+       selected_genders = st.multiselect("Select Gender", options=gender_options)
+       selected_ages = st.multiselect("Select Age", options=[str(age) for age in age_options])
+
+show_data = select_all or bool(selected_nationalities) or bool(selected_genders) or bool(selected_ages)
+
+# ====== VARIABLE DESCRIPTIONS ======
+st.markdown('<hr class="custom-hr">', unsafe_allow_html=True)
 st.markdown(
    """
-   <div class="section-title">
-       <img src="https://img.icons8.com/fluency/24/info.png" alt="Info Icon" />
-       Variable Details
+   <div class="custom-header">
+       <img src="https://img.icons8.com/fluency/48/document--v1.png" alt="Variables Icon" />
+       Dataset Variables Introduction
    </div>
-   <div class="content-text">
-       <ul>
-           <li><span style="font-weight:bold;">Age:</span> Participant's age in years (numeric)</li>
-           <li><span style="font-weight:bold;">Sleep Duration:</span> Average sleep time in hours per night (numeric)</li>
-           <li><span style="font-weight:bold;">Stress Level:</span> Self-reported stress on a scale of 1-10 (numeric)</li>
-           <li><span style="font-weight:bold;">Physical Activity:</span> Daily step count (numeric)</li>
-           <li><span style="font-weight:bold;">Diet Quality:</span> Rating of diet quality on a scale of 1-5 (numeric)</li>
-           <li><span style="font-weight:bold;">Heart Rate:</span> Average resting heart rate (bpm)</li>
-       </ul>
-   </div>
-   """, unsafe_allow_html=True
-)
+   """, unsafe_allow_html=True)
 
-# ====== FOOTER ======
+variables_description = [
+   ("Person_ID", "A unique identifier for each individual in the dataset."),
+   ("Gender", "Gender of the respondent (e.g., Male, Female)."),
+   ("Age", "Age of the respondent, typically in years."),
+   ("Occupation", "Job or profession of the individual (e.g., Software Engineer, Doctor)."),
+   ("Sleep_Duration", "Average number of hours the individual sleeps per night."),
+   ("Quality_of_Sleep", "A rating that reflects subjective sleep quality."),
+   ("Physical_Activity_Level", "An indicator of activity level, often measured in minutes or scores."),
+   ("Stress_Level", "Measure of perceived stress, rated on a scale (e.g., 1–10)."),
+   ("BMI_Category", "Body mass index category: Normal, Overweight, Obese, etc."),
+   ("Blood_Pressure", "Blood pressure in systolic/diastolic format (e.g., 126/83)."),
+   ("Heart_Rate", "Resting heart rate measured in bpm."),
+   ("Daily_Steps", "Average number of steps taken per day."),
+   ("Sleep_Disorder", "Whether the individual has a sleep disorder (e.g., Sleep Apnea) or none."),
+]
+
+for idx, (name, desc) in enumerate(variables_description, 1):
+   st.markdown(
+       f"""
+       <div class="variable-entry">
+           {idx}. <span class="name">{name}:</span> <em>{desc}</em>
+       </div>
+       """, unsafe_allow_html=True)
+
+# ====== SHOW FILTERED DATA ======
 st.markdown(
-    """
-    <hr style="border-top: 1px solid #ddd; margin-top: 40px; margin-bottom: 10px;">
-    <p style="text-align:center; font-size: 0.9rem; color: #555;">
-        © 2025 Sleep Dataset Explorer. All rights reserved.
-    </p>
-    """, unsafe_allow_html=True
-)
+   """
+   <div class="custom-header">
+       <img src="https://img.icons8.com/fluency/48/ms-excel.png" alt="Dataset Icon" />
+       Dataset Preview
+   </div>
+   <div class="divider-thick"></div>
+   <div class="dataset-intro-text">Explore the filtered dataset below. Use the sidebar filters to narrow down results.</div>
+   """, unsafe_allow_html=True)
+
+if show_data:
+   filtered_df = df.copy()
+   if selected_nationalities:
+       filtered_df = filtered_df[filtered_df["Nationality"].isin(selected_nationalities)]
+   if selected_genders:
+       filtered_df = filtered_df[filtered_df["Gender"].isin(selected_genders)]
+   if selected_ages:
+       filtered_df = filtered_df[filtered_df["Age"].astype(str).isin(selected_ages)]
+
+   st.markdown(f"Showing {len(filtered_df):,} of {len(df):,} records")
+   st.dataframe(filtered_df.reset_index(drop=True), use_container_width=True)
+else:
+   st.info("Please select at least one filter or check 'Select All' in the sidebar to display the dataset.") 
+
+
+
