@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from streamlit_lottie import st_lottie
 import json
-import base64
+
 # ====== PAGE CONFIG ======
 st.set_page_config(page_title="Sleep Dataset Explorer", layout="wide", page_icon="")
 
@@ -404,16 +404,4 @@ if show_data:
    st.dataframe(filtered_df.reset_index(drop=True), use_container_width=True)
 else:
    st.info("Please select at least one filter or check 'Select All' in the sidebar to display the dataset.")
-# --- MUSIC BACKGROUND ---
-def get_audio_base64(file_path):
-    with open(file_path, "rb") as f:
-        data = f.read()
-    return base64.b64encode(data).decode()
 
-audio_base64 = get_audio_base64("lofi.mp3")  
-audio_html = f"""
-<audio autoplay loop>
-    <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
-</audio>
-"""
-st.markdown(audio_html, unsafe_allow_html=True)
