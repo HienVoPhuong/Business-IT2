@@ -1,353 +1,407 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
-import numpy as np
-import joypy
-import time
+from streamlit_lottie import st_lottie
+import json
 
-# -------------------- PAGE CONFIG --------------------
+# ====== PAGE CONFIG ======
+st.set_page_config(page_title="Sleep Dataset Explorer", layout="wide", page_icon="")
+
+# ====== CUSTOM CSS ======
 st.markdown("""
-   <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
-   <style>
-     
-       html, body, [class*="st-"], .stApp, .stSidebar, .stSidebarContent {
-           font-family: 'Merriweather', serif !important;
-       }
+<style>
 
-      
-       h1, h2, h3, h4, h5, h6, p, span, div, label, section, input, textarea, select {
-           font-family: 'Merriweather', serif !important;
-       }
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&display=swap');
 
-      
-       .stButton>button,
-       .stTextInput>div>input,
-       .stSelectbox>div>div,
-       .stMultiSelect>div>div,
-       .stSlider,
-       .stSlider>div>div,
-       .stSlider>div>div>div {
-           font-family: 'Merriweather', serif !important;
-       }
-   </style>
+html, body, [class*="css"], .main, .main * {
+   font-family: 'Merriweather', serif !important;
+}
+
+.main .block-container {
+   padding-left: 2rem !important;
+   padding-right: 2rem !important;
+   max-width: none !important;
+   padding-top: 1rem !important;
+   padding-bottom: 1rem !important;
+}
+
+.main-heading {
+   font-size: 3.1rem;
+   font-weight: 900;
+   background: linear-gradient(45deg, #6C63FF, #20B2AA);
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+   background-clip: text;
+   text-fill-color: transparent;
+   user-select: none;
+   margin: 6px 0 4px 0;
+   text-align: center;
+   width: 100%;
+   text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+}
+.main-heading img {
+   filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
+}
+
+.sub-heading {
+   font-size: 1.4rem;
+   font-weight: 700;
+   margin-top: 12px;
+   margin-bottom: 6px;
+   color: #000000;
+   display: flex;
+   align-items: center;
+   gap: 10px;
+}
+
+.sub-sub-heading {
+   font-family: 'Merriweather', serif !important;
+   font-size: 1rem;
+   font-style: italic;
+   color: #666;
+   margin-bottom: 8px;
+   padding-left: 6px;
+   border-left: 4px solid #0077cc;
+   user-select: none;
+}
+
+.section-title {
+   font-family: 'Merriweather', serif !important;
+   font-size: 1.3rem;
+   font-weight: 700;
+   color: #000000;
+   margin-top: 36px;
+   margin-bottom: 8px;
+   display: flex;
+   align-items: center;
+   gap: 10px;
+   border-bottom: 2px solid #0077cc;
+   padding-bottom: 6px;
+}
+
+.section-title img {
+   filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+}
+
+.content-text {
+   font-family: 'Merriweather', serif !important;
+   font-size: 1.05rem;
+   color: #000000;
+   line-height: 1.6;
+   text-align: justify;
+   margin-bottom: 18px;
+   max-width: 900px;
+}
+
+.metric-box {
+   font-family: 'Merriweather', serif !important;
+   display: flex;
+   align-items: center;
+   gap: 12px;
+   background-color: #f9f9f9;
+   padding: 14px 18px;
+   border-radius: 12px;
+   box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+   font-size: 1.05rem;
+   font-weight: 600;
+   color: #222;
+   user-select: none;
+   transition: transform 0.15s ease-in-out;
+   cursor: default;
+}
+.metric-box:hover {
+   transform: translateY(-4px);
+   box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+.metric-icon {
+   width: 26px;
+   height: 26px;
+   filter: drop-shadow(0 1px 1px rgba(0,0,0,0.07));
+}
+.bar-blue    { border-left: 6px solid #3399ff; }
+.bar-green   { border-left: 6px solid #33cc88; }
+
+.variable-entry {
+   font-family: 'Merriweather', serif !important;
+   font-size: 1.1rem;
+   line-height: 2.4;
+   margin-bottom: 18px;
+   max-width: 850px;
+   user-select: text;
+}
+.variable-entry span.name {
+   color: #0077cc;
+   font-weight: 700;
+   padding-left: 8px;
+}
+.variable-entry em {
+   color: #000000;
+   font-style: italic;
+}
+
+/* Fade-in animation */
+.fade-in-section {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 1s forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.custom-header {
+   font-family: 'Merriweather', serif !important;
+   font-size: 1.5rem !important;
+   font-weight: 700 !important;
+   margin-top: 40px !important;
+   margin-bottom: 12px !important;
+   color: #000000;
+   display: flex;
+   align-items: center;
+   gap: 14px;
+   user-select: none;
+}
+.custom-header img {
+   filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15));
+}
+
+.divider-thick {
+   width: 100%;
+   height: 4px;
+   background-color: #0077cc;
+   border-radius: 8px;
+   margin: 14px 0 18px 0;
+}
+
+.dataset-intro-text {
+   font-family: 'Merriweather', serif !important;
+   font-size: 1.1rem;
+   color: #222;
+   margin-bottom: 20px;
+   max-width: 850px;
+}
+
+hr.custom-hr {
+   border: none;
+   border-top: 2px solid #ddd;
+   margin-top: 28px;
+   margin-bottom: 16px;
+}
+
+</style>
 """, unsafe_allow_html=True)
 
-# -------------------- CUSTOM CSS EFFECT --------------------
-st.markdown("""
-    <style>
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translate3d(0, 20px, 0);
-            }
-            to {
-                opacity: 1;
-                transform: none;
-            }
-        }
-
-        .fade-in-section {
-            animation: fadeInUp 0.8s ease-in-out;
-        }
-
-        .insight-box:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            transform: translateY(-4px);
-            transition: all 0.3s ease;
-        }
-
-        .insight-box {
-            transition: all 0.3s ease;
-        }
-
-        .stDataFrame thead tr th {
-            background-color: #f0f2f6;
-            color: #333;
-        }
-
-        .stDataFrame tbody tr:hover {
-            background-color: #f6f6f6;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-# -------------------- CONSTANTS --------------------
-DISORDER_ORDER = ['Sleep Apnea', 'Insomnia', 'None']
-COLOR_MAP = {'Sleep Apnea': '#E6A1B3', 'Insomnia': '#E66A6A', 'None': '#D8BFD8'}
-RIDGE_COLOR_MAP = {'Sleep Apnea': '#A7C7E7', 'Insomnia': '#FFD1A9', 'None': '#E66A6A'}
-
-# -------------------- DATA LOADING --------------------
-@st.cache_data
-def load_data():
-    df = pd.read_excel("Sleep Health Lifestyle Dataset.xlsx")
-    df['Sleep Disorder'] = df['Sleep Disorder'].fillna('None')
-    return df
-
-# -------------------- FILTER FUNCTION --------------------
-def apply_filters(data, genders, disorders, age_range):
-    return data[
-        (data['Gender'].isin(genders)) &
-        (data['Sleep Disorder'].isin(disorders)) &
-        (data['Age'].between(age_range[0], age_range[1]))
-    ]
-
-# -------------------- PIE CHART FUNCTION --------------------
-def plot_pie_chart(data):
-    counts = data['Sleep Disorder'].value_counts().reindex(DISORDER_ORDER).fillna(0)
-    filtered_counts = counts[counts > 0]
-
-    if filtered_counts.empty:
-        st.warning("No data for the selected filters.")
-        return counts
-
-    if len(filtered_counts) == 1:
-        st.info(f"Only one disorder selected: **{filtered_counts.index[0]}** (100%).")
-
-    fig, ax = plt.subplots(figsize=(6, 6))
-    wedges, _, _ = ax.pie(
-        filtered_counts,
-        colors=[COLOR_MAP[k] for k in filtered_counts.index],
-        autopct='%1.1f%%',
-        startangle=140,
-        textprops={'fontsize': 13},
-        wedgeprops={'edgecolor': 'white', 'linewidth': 1.5},
-        pctdistance=0.8
-    )
-
-    for i, wedge in enumerate(wedges):
-        ang = (wedge.theta2 + wedge.theta1) / 2
-        x, y = np.cos(np.deg2rad(ang)), np.sin(np.deg2rad(ang))
-        ha = "right" if x < 0 else "left"
-        ax.annotate(
-            filtered_counts.index[i],
-            xy=(x, y),
-            xytext=(1.1 * np.sign(x), 1.05 * y),
-            ha=ha, va="center",
-            fontsize=14,
-            bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="gray", lw=0.5),
-            arrowprops=dict(arrowstyle="-", color="gray")
-        )
-
-    ax.axis('equal')
-    st.pyplot(fig)
-    plt.close(fig)
-    return counts
-
-# -------------------- RIDGELINE PLOT FUNCTION --------------------
-def plot_ridgeline(data):
-    valid_counts = data['Sleep Disorder'].value_counts()
-    valid_disorders = valid_counts[valid_counts > 1].index.tolist()
-    ridge_df = data[data['Sleep Disorder'].isin(valid_disorders)].dropna(subset=['Stress Level'])
-
-    if not valid_disorders or ridge_df.empty:
-        st.info("Not enough data to show ridgeline plot.")
-        return ridge_df
-
-    fig, _ = joypy.joyplot(
-        ridge_df,
-        by='Sleep Disorder',
-        column='Stress Level',
-        color=[RIDGE_COLOR_MAP[d] for d in valid_disorders],
-        alpha=0.7,
-        figsize=(8, 6),
-        fade=True
-    )
-    plt.xlabel('Stress Level', fontsize=14)
-    plt.tight_layout()
-    st.pyplot(fig)
-    plt.close(fig)
-    return ridge_df
-
-# -------------------- INTERPRETATION GENERATOR --------------------
-def generate_dynamic_analysis(counts, ridge_df):
-    total = counts.sum()
-    dominant = counts.idxmax() if total > 0 else None
-
-    BADGE_COLOR = COLOR_MAP
-
-    def badge(text, color="#FFD700"):
-        return f'<span style="background-color:{color}; color:black; padding:3px 8px; border-radius:8px; font-size:13px;">{text}</span>'
-
-    def colored_number(value):
-        try:
-            val = float(value)
-            if val < 5:
-                color = "#668fd4"
-            elif val < 7:
-                color = "#fa9850"
-            else:
-                color = "#e4444e"
-            return f'<span style="color:{color}; font-weight:bold;">{val:.2f}</span>'
-        except:
-            return f'<span style="color:gray;">N/A</span>'
-
-    if total == 0:
-        pie_summary = "No data available for current filter selection."
-    else:
-        pie_summary = (
-            f"The most common sleep condition in the selected group is "
-            f"{badge(dominant, BADGE_COLOR.get(dominant, '#ccc'))}, based on the filtered data."
-        )
-
-    if ridge_df.empty:
-        ridge_summary = "Stress level distribution is not available for the current filters."
-    else:
-        avg_stress = ridge_df.groupby('Sleep Disorder')['Stress Level'].mean().sort_values(ascending=False)
-        highest = avg_stress.index[0]
-        highest_val = avg_stress.iloc[0]
-        ridge_summary = (
-            f"People with {badge(highest, BADGE_COLOR.get(highest, '#ccc'))} show the highest average stress level: "
-            f"{colored_number(highest_val)}."
-        )
-
-    return pie_summary, ridge_summary
-
-# -------------------- DEMOGRAPHIC INSIGHT GENERATOR --------------------
-def generate_demographic_insight(filtered_df):
-    insights = ""
-    BADGE_COLOR = COLOR_MAP
-
-    def badge(text, color="#FFD700"):
-        return f'<span style="background-color:{color}; color:black; padding:3px 8px; border-radius:8px; font-size:13px;">{text}</span>'
-
-    def colored_number(value):
-        try:
-            val = float(value)
-            if val < 5:
-                color = "#668fd4"
-            elif val < 7:
-                color = "#fa9850"
-            else:
-                color = "#e4444e"
-            return f'<span style="color:{color}; font-weight:bold;">{val:.2f}</span>'
-        except:
-            return f'<span style="color:gray;">N/A</span>'
-
-    if 'Gender' in filtered_df.columns and not filtered_df.empty:
-        gender_groups = filtered_df.groupby('Gender', observed=False)
-        insights += "<strong>🔸Gender-Based Observations</strong><br><br>"
-
-        for gender, group in gender_groups:
-            disorder_ratio = group['Sleep Disorder'].value_counts(normalize=True) * 100
-            dominant_disorder = disorder_ratio.idxmax()
-            stress_mean = group['Stress Level'].mean() if 'Stress Level' in group.columns else None
-
-            insights += f"- Among <strong>{gender}</strong>, the most common sleep condition is {badge(dominant_disorder, BADGE_COLOR.get(dominant_disorder, '#ccc'))}.<br>"
-            if stress_mean:
-                insights += f"&nbsp;&nbsp;&nbsp;&nbsp;Average stress level: {colored_number(stress_mean)}<br>"
-
-    if 'Age' in filtered_df.columns:
-        age_bins = [0, 25, 40, 60, 100]
-        age_labels = ["<25", "25-40", "40-60", "60+"]
-        filtered_df = filtered_df.copy()
-        filtered_df['Age Group'] = pd.cut(filtered_df['Age'], bins=age_bins, labels=age_labels)
-
-        insights += "<br><strong>🔸Age Group Insights</strong><br><br>"
-        age_groups = filtered_df.groupby('Age Group', observed=False)
-
-        for label, group in age_groups:
-            if group.empty:
-                continue
-            disorder_counts = group['Sleep Disorder'].value_counts(normalize=True) * 100
-            top_disorder = disorder_counts.idxmax()
-            avg_stress = group['Stress Level'].mean() if 'Stress Level' in group.columns else None
-
-            insights += f"- In the <strong>{label}</strong> age group, {badge(top_disorder, BADGE_COLOR.get(top_disorder, '#ccc'))} is most common.<br>"
-            if avg_stress:
-                insights += f"&nbsp;&nbsp;&nbsp;&nbsp;Average stress level: {colored_number(avg_stress)}<br>"
-
-    return insights
-
-# -------------------- MAIN APP --------------------
-df = load_data()
-if df.empty:
-    st.stop()
-
-# -------------------- SIDEBAR FILTERS --------------------
-st.sidebar.title("Filters")
-genders = df['Gender'].dropna().unique().tolist()
-selected_genders = st.sidebar.multiselect("Select gender(s):", options=genders, default=genders)
-selected_disorders = st.sidebar.multiselect("Select disorder types:", options=DISORDER_ORDER, default=DISORDER_ORDER)
-min_age, max_age = int(df['Age'].min()), int(df['Age'].max())
-age_range = st.sidebar.slider("Select age range:", min_age, max_age, (min_age, max_age))
-
-with st.spinner("Processing filters..."):
-    time.sleep(0.5)
-    filtered_df = apply_filters(df, selected_genders, selected_disorders, age_range).copy()
-
-# -------------------- MAIN CONTENT --------------------
+# ====== TITLE with gradient and fade-in ======
 st.markdown('''
     <div class="fade-in-section">
         <h1 style='text-align: center;
-                   background: -webkit-linear-gradient(45deg, #6C63FF, #20B2AA);
+                   background: -webkit-linear-gradient(50deg, #6C63FF, #20B2AA);
                    -webkit-background-clip: text;
                    -webkit-text-fill-color: transparent;
                    font-weight: 800;
-                   font-size: 2.5em;'>Sleep Disorders & Stress Level Analysis</h1>
+                   font-size: 2.5em;
+                   font-family: "Merriweather", serif;
+                   '>Sleep Dataset Explorer</h1>
     </div>
 ''', unsafe_allow_html=True)
+
+# Load lottie animation from local file
+def load_lottie_file(filepath: str):
+   with open(filepath, "r") as f:
+       return json.load(f)
+
+lottie_sleep = load_lottie_file("panda_sleep.json")
+
+if lottie_sleep:
+   st_lottie(
+       lottie_sleep,
+       speed=1,
+       loop=True,
+       quality="high",
+       height=300,
+       key="sleep_animation"
+   )
+else:
+   st.error("Failed to load animation")
+
+# ====== SUBTITLE ======
 st.markdown(
-    "<p style='text-align: center; font-size:18px;'>Visualizing the proportion of sleep disorders and how stress levels distribute across them.</p>", 
-    unsafe_allow_html=True
+   """
+   <div class="sub-heading">
+       <img src="https://img.icons8.com/fluency/48/open-book.png" width="30" alt="Book Icon" />
+       Explore and Filter Sleep Data
+   </div>
+   <div class="sub-sub-heading">Dive deep into the insights behind sleep and lifestyle.</div>
+   """, unsafe_allow_html=True)
+
+# ====== METRICS ======
+cols = st.columns(2)
+
+metrics = [
+   ("https://img.icons8.com/?size=96&id=HFPX8dOrlqo7&format=png", "533 rows", "bar-blue"),
+   ("https://img.icons8.com/?size=96&id=80305&format=png", "15 columns", "bar-green"),
+]
+
+for col, (icon, text, color_class) in zip(cols, metrics):
+   col.markdown(
+       f"""
+       <div style="
+           background-color: #f7f9fa;
+           padding: 16px;
+           border-radius: 12px;
+           text-align: center;
+           box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+           height: 120px;
+           display: flex;
+           flex-direction: column;
+           justify-content: center;
+           align-items: center;
+           width: 100%;
+       ">
+           <img src="{icon}" width="48" style="margin-bottom: 8px;" />
+           <span style="font-size: 18px; font-weight: bold;">{text}</span>
+       </div>
+       """,
+       unsafe_allow_html=True,
+   )
+
+st.markdown(
+   """
+   <style>
+   .section-title {
+       display: flex;
+       align-items: center;
+       font-weight: bold;
+       font-size: 24px;
+       margin-bottom: 10px;
+   }
+   .section-title img {
+       margin-right: 10px;
+   }
+   .content-text {
+       width: 100%;
+       font-size: 18px;
+       line-height: 1.6;
+       margin-bottom: 30px;
+       text-align: justify;
+   }
+   </style>
+   """, unsafe_allow_html=True
 )
 
-col1, col2 = st.columns(2)
+# ====== DATASET OVERVIEW ======
+st.markdown(
+   """
+   <div class="section-title">
+       <img src="https://img.icons8.com/fluency/24/data-configuration.png" alt="Data Icon" />
+       Dataset Overview
+   </div>
+   <div class="content-text" style="width: 100%; max-width: none;">
+       This dataset contains rich records of sleep, health, and lifestyle data from a diverse group of participants. It includes key measures like sleep duration, sleep quality, physical activity, dietary habits, and health indicators such as stress levels and heart rate. Demographic and lifestyle information enables multifaceted analysis of sleep health.
+   </div>
+   """, unsafe_allow_html=True
+)
 
-with col1:
-    with st.spinner("Loading sleep disorder chart..."):
-        time.sleep(0.8)
-        st.markdown('<div class="fade-in-section">', unsafe_allow_html=True)
-        st.subheader("Sleep Disorder Proportion")
-        disorder_counts = plot_pie_chart(filtered_df)
-        st.markdown('</div>', unsafe_allow_html=True)
+# ====== WHY CHOOSE THIS DATASET ======
+st.markdown(
+   """
+   <div class="section-title">
+       <img src="https://img.icons8.com/fluency/24/why-us-female.png" alt="Why Icon" />
+       Why We Chose This Dataset
+   </div>
+   <div class="content-text" style="width: 100%; max-width: none;">
+       The dataset combines objective data (sleep duration, blood pressure, steps) and subjective ratings (sleep quality, stress) with demographic details (age, gender, occupation). This multidimensional data allows in-depth exploration of lifestyle impacts on sleep and health, ideal for uncovering meaningful patterns.
+   </div>
+   """, unsafe_allow_html=True
+)
+# ====== LOAD DATA ======
+@st.cache_data
+def load_data():
+   df = pd.read_excel("Sleep Health Lifestyle Dataset.xlsx")
+   df.columns = df.columns.str.strip().str.replace(" ", "_")
+   return df
 
-with col2:
-    with st.spinner("Generating stress level plot..."):
-        time.sleep(0.8)
-        st.markdown('<div class="fade-in-section">', unsafe_allow_html=True)
-        st.subheader("Stress Level Distribution by Disorder")
-        ridge_data = plot_ridgeline(filtered_df)
-        st.markdown('</div>', unsafe_allow_html=True)
+df = load_data()
 
-# -------------------- INTERPRETATION --------------------
-pie_en, ridge_en = generate_dynamic_analysis(disorder_counts, ridge_data)
-demographic_en = generate_demographic_insight(filtered_df)
+# ====== SIDEBAR FILTER ======
+with st.sidebar:
+   st.markdown("<h3 style='font-family: Georgia, serif; color:#004a99;'> Filter Dataset</h3>", unsafe_allow_html=True)
+   select_all = st.checkbox("Select All", value=False)
 
-st.markdown("---")
-st.markdown('<div class="fade-in-section">', unsafe_allow_html=True)
-st.subheader("Analytical Summary")
-st.markdown("This analytical summary is displayed based on the chosen filter criteria")
-col_a, col_b = st.columns(2)
+   nationality_options = sorted(df["Nationality"].dropna().unique().tolist())
+   gender_options = sorted(df["Gender"].dropna().unique().tolist())
+   age_options = sorted(df["Age"].dropna().unique().astype(int))
 
-with col_a:
-    st.markdown(
-        f"""
-        <div class="insight-box" style="padding:20px; background-color:#f9f9f9; border-left: 5px solid #6C63FF; border-radius:10px; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.05);">
-            <h3 style="margin-top:0; color:#333;">General Insights</h3>
-            <p style="font-size:16px;">{pie_en}</p>
-            <p style="font-size:16px;">{ridge_en}</p>
-            <hr style="margin:15px 0;">
-            <p style="font-size:14px;"><strong>Stress Level Legend:</strong><br>
-                <span style="color:#668fd4; font-weight:bold;">Low &lt; 5</span> |
-                <span style="color:#fa9850; font-weight:bold;">Moderate 5 - 6.99</span> |
-                <span style="color:#e4444e; font-weight:bold;">High ≥ 7</span>
-            </p>
-        </div>
-        """, unsafe_allow_html=True
-    )
+   if select_all:
+       selected_nationalities = nationality_options
+       selected_genders = gender_options
+       selected_ages = [str(age) for age in age_options]
+   else:
+       selected_nationalities = st.multiselect("Select Nationality", options=nationality_options)
+       selected_genders = st.multiselect("Select Gender", options=gender_options)
+       selected_ages = st.multiselect("Select Age", options=[str(age) for age in age_options])
 
-with col_b:
-    st.markdown(
-        f"""
-        <div class="insight-box" style="padding:20px; background-color:white; border-left: 5px solid #20B2AA; border-radius:10px; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.05);">
-            <h3 style="margin-top:0; color:#333;">Demographic Patterns</h3>
-            <p style="font-size:16px;">{demographic_en}</p>
-        </div>
-        """, unsafe_allow_html=True
-    )
-st.markdown('</div>', unsafe_allow_html=True)
+show_data = select_all or bool(selected_nationalities) or bool(selected_genders) or bool(selected_ages)
 
-# -------------------- RAW DATA --------------------
-with st.expander("View Filtered Raw Data"):
-    st.caption("Filtered dataset preview:")
-    st.dataframe(filtered_df.reset_index(drop=True), use_container_width=True)
+# ====== VARIABLE DESCRIPTIONS ======
+st.markdown('<hr class="custom-hr">', unsafe_allow_html=True)
+st.markdown(
+   """
+   <div class="custom-header">
+       <img src="https://img.icons8.com/fluency/48/document--v1.png" alt="Variables Icon" />
+       Dataset Variables Introduction
+   </div>
+   """, unsafe_allow_html=True)
+
+variables_description = [
+   ("Person_ID", "A unique identifier for each individual in the dataset."),
+   ("Gender", "Gender of the respondent (e.g., Male, Female)."),
+   ("Age", "Age of the respondent, typically in years."),
+   ("Occupation", "Job or profession of the individual (e.g., Software Engineer, Doctor)."),
+   ("Sleep_Duration", "Average number of hours the individual sleeps per night."),
+   ("Quality_of_Sleep", "A rating that reflects subjective sleep quality."),
+   ("Physical_Activity_Level", "An indicator of activity level, often measured in minutes or scores."),
+   ("Stress_Level", "Measure of perceived stress, rated on a scale (e.g., 1–10)."),
+   ("BMI_Category", "Body mass index category: Normal, Overweight, Obese, etc."),
+   ("Blood_Pressure", "Blood pressure in systolic/diastolic format (e.g., 126/83)."),
+   ("Heart_Rate", "Resting heart rate measured in bpm."),
+   ("Daily_Steps", "Average number of steps taken per day."),
+   ("Sleep_Disorder", "Whether the individual has a sleep disorder (e.g., Sleep Apnea) or none."),
+]
+
+for idx, (name, desc) in enumerate(variables_description, 1):
+   st.markdown(
+       f"""
+       <div class="variable-entry">
+           {idx}. <span class="name">{name}:</span> <em>{desc}</em>
+       </div>
+       """, unsafe_allow_html=True)
+
+# ====== SHOW FILTERED DATA ======
+st.markdown(
+   """
+   <div class="custom-header">
+       <img src="https://img.icons8.com/fluency/48/ms-excel.png" alt="Dataset Icon" />
+       Dataset Preview
+   </div>
+   <div class="divider-thick"></div>
+   <div class="dataset-intro-text">Explore the filtered dataset below. Use the sidebar filters to narrow down results.</div>
+   """, unsafe_allow_html=True)
+
+if show_data:
+   filtered_df = df.copy()
+   if selected_nationalities:
+       filtered_df = filtered_df[filtered_df["Nationality"].isin(selected_nationalities)]
+   if selected_genders:
+       filtered_df = filtered_df[filtered_df["Gender"].isin(selected_genders)]
+   if selected_ages:
+       filtered_df = filtered_df[filtered_df["Age"].astype(str).isin(selected_ages)]
+
+   st.markdown(f"Showing {len(filtered_df):,} of {len(df):,} records")
+   st.dataframe(filtered_df.reset_index(drop=True), use_container_width=True)
+else:
+   st.info("Please select at least one filter or check 'Select All' in the sidebar to display the dataset.")
+
