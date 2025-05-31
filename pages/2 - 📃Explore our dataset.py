@@ -202,7 +202,9 @@ st.markdown('''
                    -webkit-background-clip: text;
                    -webkit-text-fill-color: transparent;
                    font-weight: 800;
-                   font-size: 2.5em;'>Sleep Dataset Explorer</h1>
+                   font-size: 2.5em;
+                   font-family: "Merriweather", serif;
+                   '>Sleep Dataset Explorer</h1>
     </div>
 ''', unsafe_allow_html=True)
 
