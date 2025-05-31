@@ -12,7 +12,7 @@ st.markdown("""
 
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&display=swap');
 
-html, body, [class*="css"] {
+html, body, [class*="css"], .main, .main * {
    font-family: 'Merriweather', serif !important;
 }
 
@@ -54,6 +54,7 @@ html, body, [class*="css"] {
 }
 
 .sub-sub-heading {
+   font-family: 'Merriweather', serif !important;
    font-size: 1rem;
    font-style: italic;
    color: #666;
@@ -64,6 +65,7 @@ html, body, [class*="css"] {
 }
 
 .section-title {
+   font-family: 'Merriweather', serif !important;
    font-size: 1.3rem;
    font-weight: 700;
    color: #000000;
@@ -81,6 +83,7 @@ html, body, [class*="css"] {
 }
 
 .content-text {
+   font-family: 'Merriweather', serif !important;
    font-size: 1.05rem;
    color: #000000;
    line-height: 1.6;
@@ -90,6 +93,7 @@ html, body, [class*="css"] {
 }
 
 .metric-box {
+   font-family: 'Merriweather', serif !important;
    display: flex;
    align-items: center;
    gap: 12px;
@@ -117,6 +121,7 @@ html, body, [class*="css"] {
 .bar-green   { border-left: 6px solid #33cc88; }
 
 .variable-entry {
+   font-family: 'Merriweather', serif !important;
    font-size: 1.1rem;
    line-height: 2.4;
    margin-bottom: 18px;
@@ -148,6 +153,7 @@ html, body, [class*="css"] {
 }
 
 .custom-header {
+   font-family: 'Merriweather', serif !important;
    font-size: 1.5rem !important;
    font-weight: 700 !important;
    margin-top: 40px !important;
@@ -171,6 +177,7 @@ html, body, [class*="css"] {
 }
 
 .dataset-intro-text {
+   font-family: 'Merriweather', serif !important;
    font-size: 1.1rem;
    color: #222;
    margin-bottom: 20px;
