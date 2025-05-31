@@ -9,19 +9,11 @@ st.set_page_config(page_title="Sleep Dataset Explorer", layout="wide", page_icon
 # ====== CUSTOM CSS ======
 st.markdown("""
 <style>
+
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&display=swap');
 
-/* Apply Merriweather font to entire page including sidebar and headers */
-html, body, [class*="css"], .css-1d391kg, .css-1d391kg * {
-    font-family: 'Merriweather', serif !important;
-}
-
-.css-18ni7ap h1, .css-18ni7ap h2, .css-18ni7ap h3, .css-18ni7ap h4, .css-18ni7ap h5, .css-18ni7ap h6 {
-    font-family: 'Merriweather', serif !important;
-}
-
-[data-testid="stSidebar"] * {
-    font-family: 'Merriweather', serif !important;
+html, body, [class*="css"] {
+   font-family: 'Merriweather', serif !important;
 }
 
 .main .block-container {
@@ -141,6 +133,20 @@ html, body, [class*="css"], .css-1d391kg, .css-1d391kg * {
    font-style: italic;
 }
 
+/* Fade-in animation */
+.fade-in-section {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 1s forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .custom-header {
    font-size: 1.5rem !important;
    font-weight: 700 !important;
@@ -177,12 +183,23 @@ hr.custom-hr {
    margin-top: 28px;
    margin-bottom: 16px;
 }
+
 </style>
 """, unsafe_allow_html=True)
 
-# ====== TITLE + LOTTIE ANIMATION ======
-st.markdown('<h1 class="main-heading">Sleep Dataset Explorer</h1>', unsafe_allow_html=True)
+# ====== TITLE with gradient and fade-in ======
+st.markdown('''
+    <div class="fade-in-section">
+        <h1 style='text-align: center;
+                   background: -webkit-linear-gradient(45deg, #6C63FF, #20B2AA);
+                   -webkit-background-clip: text;
+                   -webkit-text-fill-color: transparent;
+                   font-weight: 800;
+                   font-size: 2.5em;'>Sleep Dataset Explorer</h1>
+    </div>
+''', unsafe_allow_html=True)
 
+# Load lottie animation from local file
 def load_lottie_file(filepath: str):
    with open(filepath, "r") as f:
        return json.load(f)
