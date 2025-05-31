@@ -232,7 +232,7 @@ st.markdown(
    """
    <div class="sub-heading">
        <img src="https://img.icons8.com/fluency/48/open-book.png" width="30" alt="Book Icon" />
-       Sleep Data Overview
+      Explore and Filter Sleep Data
    </div>
    <div class="sub-sub-heading">Dive deep into the insights behind sleep and lifestyle.</div>
    """, unsafe_allow_html=True)
