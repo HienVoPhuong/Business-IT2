@@ -208,7 +208,7 @@ st.markdown(
    """, unsafe_allow_html=True)
 
 # ====== METRICS ======
-cols = st.columns(5)
+cols = st.columns(2)
 
 metrics = [
    ("https://img.icons8.com/?size=96&id=HFPX8dOrlqo7&format=png", "533 rows", "bar-blue"),
