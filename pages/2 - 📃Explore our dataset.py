@@ -36,7 +36,7 @@ padding-bottom: 1rem !important;
    text-align: center;
    width: 100%;
 }
-          st.markdown('<p style="font-family: Merriweather, serif;">Kiểm tra font Merriweather đang hoạt động</p>', unsafe_allow_html=True)
+          st.markdown('<p style="font-family: Merriweather, serif;" unsafe_allow_html=True)
 
 .main-heading img {
    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
