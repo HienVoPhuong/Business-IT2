@@ -12,11 +12,9 @@ st.markdown("""
 
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&display=swap');
 
-
 html, body, [class*="css"] {
    font-family: 'Merriweather', serif !important;
 }
-
 
 .main .block-container {
    padding-left: 2rem !important;
@@ -135,6 +133,20 @@ html, body, [class*="css"] {
    font-style: italic;
 }
 
+/* Fade-in animation */
+.fade-in-section {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 1s forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .custom-header {
    font-size: 1.5rem !important;
    font-weight: 700 !important;
@@ -175,8 +187,17 @@ hr.custom-hr {
 </style>
 """, unsafe_allow_html=True)
 
-# ====== TITLE + LOTTIE ANIMATION ======
-st.markdown('<h1 class="main-heading">Sleep Dataset Explorer</h1>', unsafe_allow_html=True)
+# ====== TITLE with gradient and fade-in ======
+st.markdown('''
+    <div class="fade-in-section">
+        <h1 style='text-align: center;
+                   background: -webkit-linear-gradient(45deg, #6C63FF, #20B2AA);
+                   -webkit-background-clip: text;
+                   -webkit-text-fill-color: transparent;
+                   font-weight: 800;
+                   font-size: 2.5em;'>Sleep Dataset Explorer</h1>
+    </div>
+''', unsafe_allow_html=True)
 
 # Load lottie animation from local file
 def load_lottie_file(filepath: str):
@@ -329,23 +350,24 @@ for idx, (name, desc) in enumerate(variables_description, 1):
 st.markdown(
    """
    <div class="custom-header">
-       <img src="https://img.icons8.com/fluency/48/ms-excel.png" alt="Dataset Icon" />
-       Dataset Preview
+       <img src="https://img.icons8.com/fluency/48/ms-excel.png" alt="Data Table Icon" />
+       Filtered Dataset Preview
    </div>
-   <div class="divider-thick"></div>
-   <div class="dataset-intro-text">Explore the filtered dataset below. Use the sidebar filters to narrow down results.</div>
    """, unsafe_allow_html=True)
 
 if show_data:
    filtered_df = df.copy()
-   if selected_nationalities:
-       filtered_df = filtered_df[filtered_df["Nationality"].isin(selected_nationalities)]
-   if selected_genders:
-       filtered_df = filtered_df[filtered_df["Gender"].isin(selected_genders)]
-   if selected_ages:
-       filtered_df = filtered_df[filtered_df["Age"].astype(str).isin(selected_ages)]
 
-   st.markdown(f"Showing {len(filtered_df):,} of {len(df):,} records")
-   st.dataframe(filtered_df.reset_index(drop=True), use_container_width=True)
+   if not select_all:
+       if selected_nationalities:
+           filtered_df = filtered_df[filtered_df["Nationality"].isin(selected_nationalities)]
+       if selected_genders:
+           filtered_df = filtered_df[filtered_df["Gender"].isin(selected_genders)]
+       if selected_ages:
+           selected_ages_int = list(map(int, selected_ages))
+           filtered_df = filtered_df[filtered_df["Age"].isin(selected_ages_int)]
+
+   st.dataframe(filtered_df, use_container_width=True)
 else:
-   st.info("Please select at least one filter or check 'Select All' in the sidebar to display the dataset.")
+   st.info("Please select at least one filter option or check 'Select All' to view data.")
+
