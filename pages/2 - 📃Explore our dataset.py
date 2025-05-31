@@ -198,7 +198,7 @@ hr.custom-hr {
 st.markdown('''
     <div class="fade-in-section">
         <h1 style='text-align: center;
-                   background: -webkit-linear-gradient(45deg, #6C63FF, #20B2AA);
+                   background: -webkit-linear-gradient(50deg, #6C63FF, #20B2AA);
                    -webkit-background-clip: text;
                    -webkit-text-fill-color: transparent;
                    font-weight: 800;
