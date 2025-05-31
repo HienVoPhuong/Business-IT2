@@ -241,7 +241,7 @@ st.markdown(
 cols = st.columns(2)
 
 metrics = [
-   ("https://img.icons8.com/?size=96&id=HFPX8dOrlqo7&format=png", "533 rows", "bar-blue"),
+   ("https://img.icons8.com/?size=96&id=HFPX8dOrlqo7&format=png", "532 records", "bar-blue"),
    ("https://img.icons8.com/?size=96&id=80305&format=png", "15 columns", "bar-green"),
 ]
 
