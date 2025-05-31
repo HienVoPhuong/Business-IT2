@@ -16,7 +16,7 @@ def get_audio_base64(file_path):
         data = f.read()
     return base64.b64encode(data).decode()
 
-audio_base64 = get_audio_base64("lofi.mp3")  # Ensure this file exists in the same folder
+audio_base64 = get_audio_base64("lofi.mp3")  
 audio_html = f"""
 <audio autoplay loop>
     <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
