@@ -12,12 +12,12 @@ st.markdown("""
 
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&display=swap');
 
-/* Áp dụng font Merriweather cho toàn bộ ứng dụng */
+
 html, body, [class*="css"] {
    font-family: 'Merriweather', serif !important;
 }
 
-/* Reset container padding */
+
 .main .block-container {
    padding-left: 2rem !important;
    padding-right: 2rem !important;
