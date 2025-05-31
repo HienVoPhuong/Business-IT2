@@ -212,7 +212,7 @@ st.markdown(
    """, unsafe_allow_html=True)
 
 # ====== METRICS ======
-cols = st.columns(2)
+cols = st.columns(5)
 
 metrics = [
    ("https://img.icons8.com/?size=96&id=HFPX8dOrlqo7&format=png", "533 rows", "bar-blue"),
@@ -242,6 +242,30 @@ for col, (icon, text, color_class) in zip(cols, metrics):
        unsafe_allow_html=True,
    )
 
+st.markdown(
+   """
+   <style>
+   .section-title {
+       display: flex;
+       align-items: center;
+       font-weight: bold;
+       font-size: 24px;
+       margin-bottom: 10px;
+   }
+   .section-title img {
+       margin-right: 10px;
+   }
+   .content-text {
+       width: 100%;
+       font-size: 18px;
+       line-height: 1.6;
+       margin-bottom: 30px;
+       text-align: justify;
+   }
+   </style>
+   """, unsafe_allow_html=True
+)
+
 # ====== DATASET OVERVIEW ======
 st.markdown(
    """
@@ -252,7 +276,8 @@ st.markdown(
    <div class="content-text" style="width: 100%; max-width: none;">
        This dataset contains rich records of sleep, health, and lifestyle data from a diverse group of participants. It includes key measures like sleep duration, sleep quality, physical activity, dietary habits, and health indicators such as stress levels and heart rate. Demographic and lifestyle information enables multifaceted analysis of sleep health.
    </div>
-   """, unsafe_allow_html=True)
+   """, unsafe_allow_html=True
+)
 
 # ====== WHY CHOOSE THIS DATASET ======
 st.markdown(
@@ -264,12 +289,12 @@ st.markdown(
    <div class="content-text" style="width: 100%; max-width: none;">
        The dataset combines objective data (sleep duration, blood pressure, steps) and subjective ratings (sleep quality, stress) with demographic details (age, gender, occupation). This multidimensional data allows in-depth exploration of lifestyle impacts on sleep and health, ideal for uncovering meaningful patterns.
    </div>
-   """, unsafe_allow_html=True)
-
+   """, unsafe_allow_html=True
+)
 # ====== LOAD DATA ======
 @st.cache_data
 def load_data():
-   df = pd.read_excel("Sleep Health Lifestyle Dataset.xlsx")
+   df = pd.read_excel("dataset.xlsx")
    df.columns = df.columns.str.strip().str.replace(" ", "_")
    return df
 
@@ -277,7 +302,7 @@ df = load_data()
 
 # ====== SIDEBAR FILTER ======
 with st.sidebar:
-   st.markdown("<h3 style='font-family: Merriweather, serif; color:#004a99;'>Filter Dataset</h3>", unsafe_allow_html=True)
+   st.markdown("<h3 style='font-family: Georgia, serif; color:#004a99;'> Filter Dataset</h3>", unsafe_allow_html=True)
    select_all = st.checkbox("Select All", value=False)
 
    nationality_options = sorted(df["Nationality"].dropna().unique().tolist())
@@ -322,22 +347,34 @@ variables_description = [
 ]
 
 for idx, (name, desc) in enumerate(variables_description, 1):
-   st.markdown(f"<div class='variable-entry'><b>{idx}. <span class='name'>{name}</span></b>: <em>{desc}</em></div>", unsafe_allow_html=True)
-
-# ====== FILTER DATA AND SHOW TABLE ======
-if show_data:
-   mask = (
-       (df["Nationality"].isin(selected_nationalities) if selected_nationalities else True) &
-       (df["Gender"].isin(selected_genders) if selected_genders else True) &
-       (df["Age"].astype(str).isin(selected_ages) if selected_ages else True)
-   )
-   filtered_df = df.loc[mask]
-
-   st.markdown('<hr class="custom-hr">', unsafe_allow_html=True)
-   st.markdown(f"<h3 style='font-family: Merriweather, serif;'>Filtered Dataset ({len(filtered_df)} rows)</h3>", unsafe_allow_html=True)
-   st.dataframe(filtered_df, use_container_width=True)
-else:
    st.markdown(
-       "<p style='font-family: Merriweather, serif; font-size: 1.1rem; color: #555;'>Use the sidebar filters to explore the dataset.</p>",
-       unsafe_allow_html=True
-   )
+       f"""
+       <div class="variable-entry">
+           {idx}. <span class="name">{name}:</span> <em>{desc}</em>
+       </div>
+       """, unsafe_allow_html=True)
+
+# ====== SHOW FILTERED DATA ======
+st.markdown(
+   """
+   <div class="custom-header">
+       <img src="https://img.icons8.com/fluency/48/ms-excel.png" alt="Dataset Icon" />
+       Dataset Preview
+   </div>
+   <div class="divider-thick"></div>
+   <div class="dataset-intro-text">Explore the filtered dataset below. Use the sidebar filters to narrow down results.</div>
+   """, unsafe_allow_html=True)
+
+if show_data:
+   filtered_df = df.copy()
+   if selected_nationalities:
+       filtered_df = filtered_df[filtered_df["Nationality"].isin(selected_nationalities)]
+   if selected_genders:
+       filtered_df = filtered_df[filtered_df["Gender"].isin(selected_genders)]
+   if selected_ages:
+       filtered_df = filtered_df[filtered_df["Age"].astype(str).isin(selected_ages)]
+
+   st.markdown(f"Showing {len(filtered_df):,} of {len(df):,} records")
+   st.dataframe(filtered_df.reset_index(drop=True), use_container_width=True)
+else:
+   st.info("Please select at least one filter or check 'Select All' in the sidebar to display the dataset.")
