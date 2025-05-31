@@ -210,7 +210,7 @@ def generate_analytical_summary(filtered_df):
    )
 
    if top_occupation:
-       summary += f"🔹 The most common profession is {badge(top_occupation, '#FDAB9E')}, which may influence lifestyle and sleep patterns."
+       summary += f"🔹 The most common profession is {badge(top_occupation, '#FFC0C0')}, which may influence lifestyle and sleep patterns."
    else:
        summary += "🔹 Occupation data is not available for this selection."
 
@@ -262,7 +262,7 @@ with col_a:
                <span style="color:#fa9850; font-weight:bold;">Moderate 60–79 bpm</span> |
                <span style="color:#e4444e; font-weight:bold;">High ≥ 80 bpm</span><br><br>
                <strong>Badge Highlight:</strong>
-               <span style="background-color:#FDAB9E; padding:3px 6px; border-radius:6px;">Top Occupation</span>
+               <span style="background-color:#FFC0C0; padding:3px 6px; border-radius:6px;">Top Occupation</span>
            </p>
        </div>
        """, unsafe_allow_html=True
