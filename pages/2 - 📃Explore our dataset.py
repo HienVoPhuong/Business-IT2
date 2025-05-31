@@ -9,11 +9,19 @@ st.set_page_config(page_title="Sleep Dataset Explorer", layout="wide", page_icon
 # ====== CUSTOM CSS ======
 st.markdown("""
 <style>
-
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&display=swap');
 
-html, body, [class*="css"] {
-   font-family: 'Merriweather', serif !important;
+/* Apply Merriweather font to entire page including sidebar and headers */
+html, body, [class*="css"], .css-1d391kg, .css-1d391kg * {
+    font-family: 'Merriweather', serif !important;
+}
+
+.css-18ni7ap h1, .css-18ni7ap h2, .css-18ni7ap h3, .css-18ni7ap h4, .css-18ni7ap h5, .css-18ni7ap h6 {
+    font-family: 'Merriweather', serif !important;
+}
+
+[data-testid="stSidebar"] * {
+    font-family: 'Merriweather', serif !important;
 }
 
 .main .block-container {
@@ -133,20 +141,6 @@ html, body, [class*="css"] {
    font-style: italic;
 }
 
-/* Fade-in animation */
-.fade-in-section {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeInUp 1s forwards;
-}
-
-@keyframes fadeInUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .custom-header {
    font-size: 1.5rem !important;
    font-weight: 700 !important;
@@ -183,23 +177,12 @@ hr.custom-hr {
    margin-top: 28px;
    margin-bottom: 16px;
 }
-
 </style>
 """, unsafe_allow_html=True)
 
-# ====== TITLE with gradient and fade-in ======
-st.markdown('''
-    <div class="fade-in-section">
-        <h1 style='text-align: center;
-                   background: -webkit-linear-gradient(45deg, #6C63FF, #20B2AA);
-                   -webkit-background-clip: text;
-                   -webkit-text-fill-color: transparent;
-                   font-weight: 800;
-                   font-size: 2.5em;'>Sleep Dataset Explorer</h1>
-    </div>
-''', unsafe_allow_html=True)
+# ====== TITLE + LOTTIE ANIMATION ======
+st.markdown('<h1 class="main-heading">Sleep Dataset Explorer</h1>', unsafe_allow_html=True)
 
-# Load lottie animation from local file
 def load_lottie_file(filepath: str):
    with open(filepath, "r") as f:
        return json.load(f)
@@ -294,7 +277,7 @@ df = load_data()
 
 # ====== SIDEBAR FILTER ======
 with st.sidebar:
-   st.markdown("<h3 style='font-family: Georgia, serif; color:#004a99;'>Filter Dataset</h3>", unsafe_allow_html=True)
+   st.markdown("<h3 style='font-family: Merriweather, serif; color:#004a99;'>Filter Dataset</h3>", unsafe_allow_html=True)
    select_all = st.checkbox("Select All", value=False)
 
    nationality_options = sorted(df["Nationality"].dropna().unique().tolist())
@@ -339,35 +322,22 @@ variables_description = [
 ]
 
 for idx, (name, desc) in enumerate(variables_description, 1):
-   st.markdown(
-       f"""
-       <div class="variable-entry">
-           {idx}. <span class="name">{name}:</span> <em>{desc}</em>
-       </div>
-       """, unsafe_allow_html=True)
+   st.markdown(f"<div class='variable-entry'><b>{idx}. <span class='name'>{name}</span></b>: <em>{desc}</em></div>", unsafe_allow_html=True)
 
-# ====== SHOW FILTERED DATA ======
-st.markdown(
-   """
-   <div class="custom-header">
-       <img src="https://img.icons8.com/fluency/48/ms-excel.png" alt="Data Table Icon" />
-       Filtered Dataset Preview
-   </div>
-   """, unsafe_allow_html=True)
-
+# ====== FILTER DATA AND SHOW TABLE ======
 if show_data:
-   filtered_df = df.copy()
+   mask = (
+       (df["Nationality"].isin(selected_nationalities) if selected_nationalities else True) &
+       (df["Gender"].isin(selected_genders) if selected_genders else True) &
+       (df["Age"].astype(str).isin(selected_ages) if selected_ages else True)
+   )
+   filtered_df = df.loc[mask]
 
-   if not select_all:
-       if selected_nationalities:
-           filtered_df = filtered_df[filtered_df["Nationality"].isin(selected_nationalities)]
-       if selected_genders:
-           filtered_df = filtered_df[filtered_df["Gender"].isin(selected_genders)]
-       if selected_ages:
-           selected_ages_int = list(map(int, selected_ages))
-           filtered_df = filtered_df[filtered_df["Age"].isin(selected_ages_int)]
-
+   st.markdown('<hr class="custom-hr">', unsafe_allow_html=True)
+   st.markdown(f"<h3 style='font-family: Merriweather, serif;'>Filtered Dataset ({len(filtered_df)} rows)</h3>", unsafe_allow_html=True)
    st.dataframe(filtered_df, use_container_width=True)
 else:
-   st.info("Please select at least one filter option or check 'Select All' to view data.")
-
+   st.markdown(
+       "<p style='font-family: Merriweather, serif; font-size: 1.1rem; color: #555;'>Use the sidebar filters to explore the dataset.</p>",
+       unsafe_allow_html=True
+   )
