@@ -1,3 +1,4 @@
+You said:
 import streamlit as st
 import pandas as pd
 from streamlit_lottie import st_lottie
@@ -197,15 +198,12 @@ hr.custom-hr {
 # ====== TITLE with gradient and fade-in ======
 st.markdown('''
     <div class="fade-in-section">
-        <h1 style='
-            text-align: center;
-            background: -webkit-linear-gradient(45deg, #6C63FF, #20B2AA);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800;
-            font-size: 2.5em;
-            font-family: "Merriweather", serif;
-        '>Sleep Dataset Explorer</h1>
+        <h1 style='text-align: center;
+                   background: -webkit-linear-gradient(45deg, #6C63FF, #20B2AA);
+                   -webkit-background-clip: text;
+                   -webkit-text-fill-color: transparent;
+                   font-weight: 800;
+                   font-size: 2.5em;'>Sleep Dataset Explorer</h1>
     </div>
 ''', unsafe_allow_html=True)
 
@@ -404,7 +402,4 @@ if show_data:
    st.markdown(f"Showing {len(filtered_df):,} of {len(df):,} records")
    st.dataframe(filtered_df.reset_index(drop=True), use_container_width=True)
 else:
-   st.info("Please select at least one filter or check 'Select All' in the sidebar to display the dataset.") 
-
-
-
+   st.info("Please select at least one filter or check 'Select All' in the sidebar to display the dataset.")
