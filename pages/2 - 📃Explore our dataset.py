@@ -5,13 +5,7 @@ import json
 
 # ====== PAGE CONFIG ======
 st.set_page_config(page_title="Sleep Dataset Explorer", layout="wide", page_icon="")
-st.markdown("""
-   <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
-   <style>
-     
-       html, body, [class*="st-"], .stApp, .stSidebar, .stSidebarContent {
-           font-family: 'Merriweather', serif !important;
-       }
+
 # ====== CUSTOM CSS ======
 st.markdown("""
 <style>
