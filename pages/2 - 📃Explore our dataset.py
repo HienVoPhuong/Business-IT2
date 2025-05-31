@@ -12,6 +12,12 @@ st.markdown("""
 
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&display=swap');
 
+/* Áp dụng font Merriweather cho toàn bộ ứng dụng */
+html, body, [class*="css"] {
+   font-family: 'Merriweather', serif !important;
+}
+
+/* Reset container padding */
 .main .block-container {
    padding-left: 2rem !important;
    padding-right: 2rem !important;
@@ -21,7 +27,6 @@ st.markdown("""
 }
 
 .main-heading {
-   font-family: 'Merriweather', serif !important;
    font-size: 3.1rem;
    font-weight: 900;
    background: linear-gradient(45deg, #6C63FF, #20B2AA);
@@ -31,17 +36,15 @@ st.markdown("""
    text-fill-color: transparent;
    user-select: none;
    margin: 6px 0 4px 0;
-   text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
    text-align: center;
    width: 100%;
+   text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
 }
-
 .main-heading img {
    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
 }
 
 .sub-heading {
-   font-family: "Merriweather", serif;
    font-size: 1.4rem;
    font-weight: 700;
    margin-top: 12px;
@@ -53,7 +56,6 @@ st.markdown("""
 }
 
 .sub-sub-heading {
-   font-family: "Merriweather", serif;
    font-size: 1rem;
    font-style: italic;
    color: #666;
@@ -64,7 +66,6 @@ st.markdown("""
 }
 
 .section-title {
-   font-family: "Merriweather", serif;
    font-size: 1.3rem;
    font-weight: 700;
    color: #000000;
@@ -82,7 +83,6 @@ st.markdown("""
 }
 
 .content-text {
-   font-family: "Merriweather", serif;
    font-size: 1.05rem;
    color: #000000;
    line-height: 1.6;
@@ -99,7 +99,6 @@ st.markdown("""
    padding: 14px 18px;
    border-radius: 12px;
    box-shadow: 0 3px 6px rgba(0,0,0,0.05);
-   font-family: "Merriweather",serif;
    font-size: 1.05rem;
    font-weight: 600;
    color: #222;
@@ -120,7 +119,6 @@ st.markdown("""
 .bar-green   { border-left: 6px solid #33cc88; }
 
 .variable-entry {
-   font-family: "Merriweather", serif;
    font-size: 1.1rem;
    line-height: 2.4;
    margin-bottom: 18px;
@@ -138,7 +136,6 @@ st.markdown("""
 }
 
 .custom-header {
-   font-family: "Merriweather", serif;
    font-size: 1.5rem !important;
    font-weight: 700 !important;
    margin-top: 40px !important;
@@ -162,7 +159,6 @@ st.markdown("""
 }
 
 .dataset-intro-text {
-   font-family: "Merriweather", serif;
    font-size: 1.1rem;
    color: #222;
    margin-bottom: 20px;
@@ -176,24 +172,13 @@ hr.custom-hr {
    margin-bottom: 16px;
 }
 
-.css-1aumxhk {
-   font-family: "Merriweather", serif;
-}
-.css-1emrehy {
-   font-size: 1rem;
-   font-weight: 600;
-   color: #004a99;
-}
-
-.css-1pahdxg-control {
-   min-width: 280px !important;
-}
 </style>
 """, unsafe_allow_html=True)
 
 # ====== TITLE + LOTTIE ANIMATION ======
 st.markdown('<h1 class="main-heading">Sleep Dataset Explorer</h1>', unsafe_allow_html=True)
 
+# Load lottie animation from local file
 def load_lottie_file(filepath: str):
    with open(filepath, "r") as f:
        return json.load(f)
@@ -223,7 +208,7 @@ st.markdown(
    """, unsafe_allow_html=True)
 
 # ====== METRICS ======
-cols = st.columns(2)
+cols = st.columns(5)
 
 metrics = [
    ("https://img.icons8.com/?size=96&id=HFPX8dOrlqo7&format=png", "533 rows", "bar-blue"),
@@ -260,11 +245,10 @@ st.markdown(
        <img src="https://img.icons8.com/fluency/24/data-configuration.png" alt="Data Icon" />
        Dataset Overview
    </div>
-   <div class="content-text">
+   <div class="content-text" style="width: 100%; max-width: none;">
        This dataset contains rich records of sleep, health, and lifestyle data from a diverse group of participants. It includes key measures like sleep duration, sleep quality, physical activity, dietary habits, and health indicators such as stress levels and heart rate. Demographic and lifestyle information enables multifaceted analysis of sleep health.
    </div>
-   """, unsafe_allow_html=True
-)
+   """, unsafe_allow_html=True)
 
 # ====== WHY CHOOSE THIS DATASET ======
 st.markdown(
@@ -273,11 +257,10 @@ st.markdown(
        <img src="https://img.icons8.com/fluency/24/why-us-female.png" alt="Why Icon" />
        Why We Chose This Dataset
    </div>
-   <div class="content-text">
+   <div class="content-text" style="width: 100%; max-width: none;">
        The dataset combines objective data (sleep duration, blood pressure, steps) and subjective ratings (sleep quality, stress) with demographic details (age, gender, occupation). This multidimensional data allows in-depth exploration of lifestyle impacts on sleep and health, ideal for uncovering meaningful patterns.
    </div>
-   """, unsafe_allow_html=True
-)
+   """, unsafe_allow_html=True)
 
 # ====== LOAD DATA ======
 @st.cache_data
@@ -290,7 +273,7 @@ df = load_data()
 
 # ====== SIDEBAR FILTER ======
 with st.sidebar:
-   st.markdown("<h3 style='font-family: Georgia, serif; color:#004a99;'> Filter Dataset</h3>", unsafe_allow_html=True)
+   st.markdown("<h3 style='font-family: Georgia, serif; color:#004a99;'>Filter Dataset</h3>", unsafe_allow_html=True)
    select_all = st.checkbox("Select All", value=False)
 
    nationality_options = sorted(df["Nationality"].dropna().unique().tolist())
