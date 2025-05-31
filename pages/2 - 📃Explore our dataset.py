@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from streamlit_lottie import st_lottie
 import json
-
+import base64
 # ====== PAGE CONFIG ======
 st.set_page_config(page_title="Sleep Dataset Explorer", layout="wide", page_icon="")
 
