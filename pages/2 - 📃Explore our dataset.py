@@ -11,122 +11,35 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&display=swap');
 
+/* Toàn trang */
 html, body, [class*="css"] {
     font-family: 'Merriweather', serif !important;
 }
 
-/* Apply Merriweather to all widgets */
-label, button, select, textarea, input, .stSlider, .stTextInput, .stSelectbox, .stNumberInput, .stDataFrame, .stTextArea {
+/* Các component nội dung chính */
+h1, h2, h3, h4, h5, h6, strong, b, p, li, span, div, label {
     font-family: 'Merriweather', serif !important;
+}
+
+/* Markdown và văn bản */
+.stMarkdown, .stText, .stTextInput, .stSelectbox, .stDataFrame {
+    font-family: 'Merriweather', serif !important;
+    font-size: 16px;
 }
 
 /* Sidebar */
-.css-1d391kg, .css-1oe5cao, .st-emotion-cache-6qob1r {
+.sidebar .css-1d391kg, .sidebar .css-1oe5cao {
     font-family: 'Merriweather', serif !important;
 }
 
-/* Headers */
-h1, h2, h3, h4, h5, h6, strong, b {
+/* Table content */
+thead, tbody, tfoot, tr, td, th {
     font-family: 'Merriweather', serif !important;
 }
 
-.main .block-container {
-   padding-left: 2rem !important;
-   padding-right: 2rem !important;
-   max-width: none !important;
-   padding-top: 1rem !important;
-   padding-bottom: 1rem !important;
-}
-.main-heading {
-   font-size: 3.1rem;
-   font-weight: 900;
-   background: linear-gradient(45deg, #6C63FF, #20B2AA);
-   -webkit-background-clip: text;
-   -webkit-text-fill-color: transparent;
-   text-align: center;
-   text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
-}
-.sub-heading {
-   font-size: 1.4rem;
-   font-weight: 700;
-   margin-top: 12px;
-   margin-bottom: 6px;
-   color: #000000;
-   display: flex;
-   align-items: center;
-   gap: 10px;
-}
-.sub-sub-heading {
-   font-size: 1rem;
-   font-style: italic;
-   color: #666;
-   margin-bottom: 8px;
-   padding-left: 6px;
-   border-left: 4px solid #0077cc;
-}
-.section-title {
-   font-size: 1.3rem;
-   font-weight: 700;
-   color: #000000;
-   margin-top: 36px;
-   margin-bottom: 8px;
-   display: flex;
-   align-items: center;
-   gap: 10px;
-   border-bottom: 2px solid #0077cc;
-   padding-bottom: 6px;
-}
-.content-text {
-   font-size: 1.05rem;
-   color: #000000;
-   line-height: 1.6;
-   text-align: justify;
-   margin-bottom: 18px;
-   max-width: 900px;
-}
-.variable-entry {
-   font-size: 1.1rem;
-   line-height: 2.4;
-   margin-bottom: 18px;
-   max-width: 850px;
-}
-.variable-entry span.name {
-   color: #0077cc;
-   font-weight: 700;
-   padding-left: 8px;
-}
-.variable-entry em {
-   color: #000000;
-   font-style: italic;
-}
-.custom-header {
-   font-size: 1.5rem;
-   font-weight: 700;
-   margin-top: 40px;
-   margin-bottom: 12px;
-   color: #000000;
-   display: flex;
-   align-items: center;
-   gap: 14px;
-}
-.divider-thick {
-   width: 100%;
-   height: 4px;
-   background-color: #0077cc;
-   border-radius: 8px;
-   margin: 14px 0 18px 0;
-}
-.dataset-intro-text {
-   font-size: 1.1rem;
-   color: #222;
-   margin-bottom: 20px;
-   max-width: 850px;
-}
-hr.custom-hr {
-   border: none;
-   border-top: 2px solid #ddd;
-   margin-top: 28px;
-   margin-bottom: 16px;
+/* Metric box */
+.metric-label, .metric-value {
+    font-family: 'Merriweather', serif !important;
 }
 </style>
 """, unsafe_allow_html=True)
