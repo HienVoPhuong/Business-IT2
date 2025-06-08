@@ -114,7 +114,7 @@ hr.custom-hr {
 </style>
 """, unsafe_allow_html=True)
 
-# ====== TITLE with gradient and fade-in ======
+# ====== TITLE ======
 st.markdown('''
     <div class="fade-in-section">
         <h1 style='text-align: center;
@@ -128,7 +128,7 @@ st.markdown('''
     </div>
 ''', unsafe_allow_html=True)
 
-# ====== Load Lottie Animation ======
+# ====== LOTTIE ANIMATION ======
 def load_lottie_file(filepath: str):
    with open(filepath, "r") as f:
        return json.load(f)
@@ -141,14 +141,13 @@ else:
    st.error("Failed to load animation")
 
 # ====== SUBTITLE ======
-st.markdown(
-   """
+st.markdown("""
    <div class="sub-heading">
        <img src="https://img.icons8.com/fluency/48/open-book.png" width="30" alt="Book Icon" />
-      Explore and Filter Sleep Data
+       Explore and Filter Sleep Data
    </div>
    <div class="sub-sub-heading">Dive deep into the insights behind sleep and lifestyle.</div>
-   """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # ====== METRICS ======
 cols = st.columns(2)
@@ -156,10 +155,8 @@ metrics = [
    ("https://img.icons8.com/?size=96&id=HFPX8dOrlqo7&format=png", "532 records"),
    ("https://img.icons8.com/?size=96&id=80305&format=png", "15 columns"),
 ]
-
 for col, (icon, text) in zip(cols, metrics):
-   col.markdown(
-       f"""
+   col.markdown(f"""
        <div style="
            background-color: #f7f9fa;
            padding: 16px;
@@ -176,13 +173,10 @@ for col, (icon, text) in zip(cols, metrics):
            <img src="{icon}" width="48" style="margin-bottom: 8px;" />
            <span style="font-size: 18px; font-weight: bold;">{text}</span>
        </div>
-       """,
-       unsafe_allow_html=True,
-   )
+   """, unsafe_allow_html=True)
 
 # ====== DATASET OVERVIEW ======
-st.markdown(
-   """
+st.markdown("""
    <div class="section-title">
        <img src="https://img.icons8.com/fluency/24/data-configuration.png" alt="Data Icon" />
        Dataset Overview
@@ -190,11 +184,10 @@ st.markdown(
    <div class="content-text">
        This dataset contains rich records of sleep, health, and lifestyle data from a diverse group of participants. It includes key measures like sleep duration, sleep quality, physical activity, dietary habits, and health indicators such as stress levels and heart rate. Demographic and lifestyle information enables multifaceted analysis of sleep health.
    </div>
-   """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
-# ====== WHY CHOOSE THIS DATASET ======
-st.markdown(
-   """
+# ====== WHY THIS DATASET ======
+st.markdown("""
    <div class="section-title">
        <img src="https://img.icons8.com/fluency/24/why-us-female.png" alt="Why Icon" />
        Why We Chose This Dataset
@@ -202,7 +195,7 @@ st.markdown(
    <div class="content-text">
        The dataset combines objective data (sleep duration, blood pressure, steps) and subjective ratings (sleep quality, stress) with demographic details (age, gender, occupation). This multidimensional data allows in-depth exploration of lifestyle impacts on sleep and health, ideal for uncovering meaningful patterns.
    </div>
-   """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # ====== LOAD DATA ======
 @st.cache_data
@@ -213,7 +206,7 @@ def load_data():
 
 df = load_data()
 
-# ====== SIDEBAR FILTER ======
+# ====== SIDEBAR FILTERS (gọn gàng hơn) ======
 with st.sidebar:
    st.markdown("<h3 style='font-family: Georgia, serif; color:#004a99;'> Filter Dataset</h3>", unsafe_allow_html=True)
 
@@ -222,19 +215,24 @@ with st.sidebar:
    age_options = sorted(df["Age"].dropna().unique().astype(int))
    default_age_range = (min(age_options), max(age_options))
 
-   selected_nationalities = st.multiselect("Select Nationality", options=nationality_options, default=nationality_options)
-   selected_genders = st.multiselect("Select Gender", options=gender_options, default=gender_options)
-   selected_age_range = st.slider("Select Age Range", min_value=default_age_range[0], max_value=default_age_range[1], value=default_age_range)
+   selected_nationalities = st.multiselect(
+       "Select Nationality", options=nationality_options, default=None, placeholder="Choose nationality..."
+   )
+   selected_genders = st.multiselect(
+       "Select Gender", options=gender_options, default=None, placeholder="Choose gender..."
+   )
+   selected_age_range = st.slider(
+       "Select Age Range", min_value=default_age_range[0], max_value=default_age_range[1], value=default_age_range
+   )
 
 # ====== VARIABLE DESCRIPTIONS ======
 st.markdown('<hr class="custom-hr">', unsafe_allow_html=True)
-st.markdown(
-   """
+st.markdown("""
    <div class="custom-header">
        <img src="https://img.icons8.com/fluency/48/document--v1.png" alt="Variables Icon" />
        Dataset Variables Introduction
    </div>
-   """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 variables_description = [
    ("Person_ID", "A unique identifier for each individual in the dataset."),
@@ -253,31 +251,32 @@ variables_description = [
 ]
 
 for idx, (name, desc) in enumerate(variables_description, 1):
-   st.markdown(
-       f"""
+   st.markdown(f"""
        <div class="variable-entry">
            {idx}. <span class="name">{name}:</span> <em>{desc}</em>
        </div>
-       """, unsafe_allow_html=True)
-
-# ====== SHOW FILTERED DATA ======
-st.markdown(
-   """
-   <div class="custom-header">
-       <img src="https://img.icons8.com/fluency/48/ms-excel.png" alt="Dataset Icon" />
-       Dataset Preview
-   </div>
-   <div class="divider-thick"></div>
-   <div class="dataset-intro-text">Explore the filtered dataset below. Use the sidebar filters to narrow down results.</div>
    """, unsafe_allow_html=True)
 
+# ====== FILTER DATA ======
 filtered_df = df.copy()
 if selected_nationalities:
    filtered_df = filtered_df[filtered_df["Nationality"].isin(selected_nationalities)]
 if selected_genders:
    filtered_df = filtered_df[filtered_df["Gender"].isin(selected_genders)]
 if selected_age_range:
-   filtered_df = filtered_df[(filtered_df["Age"] >= selected_age_range[0]) & (filtered_df["Age"] <= selected_age_range[1])]
+   filtered_df = filtered_df[
+       (filtered_df["Age"] >= selected_age_range[0]) & (filtered_df["Age"] <= selected_age_range[1])
+   ]
+
+# ====== SHOW DATA ======
+st.markdown("""
+   <div class="custom-header">
+       <img src="https://img.icons8.com/fluency/48/ms-excel.png" alt="Dataset Icon" />
+       Dataset Preview
+   </div>
+   <div class="divider-thick"></div>
+   <div class="dataset-intro-text">Explore the filtered dataset below. Use the sidebar filters to narrow down results.</div>
+""", unsafe_allow_html=True)
 
 st.markdown(f"Showing {len(filtered_df):,} of {len(df):,} records")
 st.dataframe(filtered_df.reset_index(drop=True), use_container_width=True)
