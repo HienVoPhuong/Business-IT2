@@ -4,8 +4,12 @@ from streamlit_lottie import st_lottie
 import json
 
 
+
+
 # ====== PAGE CONFIG ======
 st.set_page_config(page_title="Sleep Dataset Explorer", layout="wide", page_icon="")
+
+
 
 
 # ====== CUSTOM CSS ======
@@ -13,12 +17,18 @@ st.markdown("""
 <style>
 
 
+
+
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&display=swap');
+
+
 
 
 html, body, [class*="css"], .main, .main * {
    font-family: 'Merriweather', serif !important;
 }
+
+
 
 
 .main .block-container {
@@ -28,6 +38,8 @@ html, body, [class*="css"], .main, .main * {
    padding-top: 1rem !important;
    padding-bottom: 1rem !important;
 }
+
+
 
 
 .main-heading {
@@ -49,6 +61,8 @@ html, body, [class*="css"], .main, .main * {
 }
 
 
+
+
 .sub-heading {
    font-size: 1.4rem;
    font-weight: 700;
@@ -61,6 +75,8 @@ html, body, [class*="css"], .main, .main * {
 }
 
 
+
+
 .sub-sub-heading {
    font-family: 'Merriweather', serif !important;
    font-size: 1rem;
@@ -71,6 +87,8 @@ html, body, [class*="css"], .main, .main * {
    border-left: 4px solid #0077cc;
    user-select: none;
 }
+
+
 
 
 .section-title {
@@ -88,9 +106,13 @@ html, body, [class*="css"], .main, .main * {
 }
 
 
+
+
 .section-title img {
    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
 }
+
+
 
 
 .content-text {
@@ -102,6 +124,8 @@ html, body, [class*="css"], .main, .main * {
    margin-bottom: 18px;
    max-width: 900px;
 }
+
+
 
 
 .metric-box {
@@ -133,6 +157,8 @@ html, body, [class*="css"], .main, .main * {
 .bar-green   { border-left: 6px solid #33cc88; }
 
 
+
+
 .variable-entry {
    font-family: 'Merriweather', serif !important;
    font-size: 1.1rem;
@@ -152,6 +178,8 @@ html, body, [class*="css"], .main, .main * {
 }
 
 
+
+
 /* Fade-in animation */
 .fade-in-section {
   opacity: 0;
@@ -160,12 +188,16 @@ html, body, [class*="css"], .main, .main * {
 }
 
 
+
+
 @keyframes fadeInUp {
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
+
+
 
 
 .custom-header {
@@ -185,6 +217,8 @@ html, body, [class*="css"], .main, .main * {
 }
 
 
+
+
 .divider-thick {
    width: 100%;
    height: 4px;
@@ -192,6 +226,8 @@ html, body, [class*="css"], .main, .main * {
    border-radius: 8px;
    margin: 14px 0 18px 0;
 }
+
+
 
 
 .dataset-intro-text {
@@ -203,6 +239,8 @@ html, body, [class*="css"], .main, .main * {
 }
 
 
+
+
 hr.custom-hr {
    border: none;
    border-top: 2px solid #ddd;
@@ -211,8 +249,12 @@ hr.custom-hr {
 }
 
 
+
+
 </style>
 """, unsafe_allow_html=True)
+
+
 
 
 # ====== TITLE with gradient and fade-in ======
@@ -230,13 +272,19 @@ st.markdown('''
 ''', unsafe_allow_html=True)
 
 
+
+
 # Load lottie animation from local file
 def load_lottie_file(filepath: str):
    with open(filepath, "r") as f:
        return json.load(f)
 
 
+
+
 lottie_sleep = load_lottie_file("panda_sleep.json")
+
+
 
 
 if lottie_sleep:
@@ -252,6 +300,8 @@ else:
    st.error("Failed to load animation")
 
 
+
+
 # ====== SUBTITLE ======
 st.markdown(
    """
@@ -263,14 +313,20 @@ st.markdown(
    """, unsafe_allow_html=True)
 
 
+
+
 # ====== METRICS ======
 cols = st.columns(2)
+
+
 
 
 metrics = [
    ("https://img.icons8.com/?size=96&id=HFPX8dOrlqo7&format=png", "532 records", "bar-blue"),
    ("https://img.icons8.com/?size=96&id=80305&format=png", "15 columns", "bar-green"),
 ]
+
+
 
 
 for col, (icon, text, color_class) in zip(cols, metrics):
@@ -295,6 +351,8 @@ for col, (icon, text, color_class) in zip(cols, metrics):
        """,
        unsafe_allow_html=True,
    )
+
+
 
 
 st.markdown(
@@ -322,6 +380,8 @@ st.markdown(
 )
 
 
+
+
 # ====== DATASET OVERVIEW ======
 st.markdown(
    """
@@ -334,6 +394,8 @@ st.markdown(
    </div>
    """, unsafe_allow_html=True
 )
+
+
 
 
 # ====== WHY CHOOSE THIS DATASET ======
@@ -356,7 +418,11 @@ def load_data():
    return df
 
 
+
+
 df = load_data()
+
+
 
 
 # ====== SIDEBAR FILTER ======
@@ -368,19 +434,20 @@ with st.sidebar:
    nationality_options = sorted(df["Nationality"].dropna().unique().tolist())
    gender_options = sorted(df["Gender"].dropna().unique().tolist())
    age_options = sorted(df["Age"].dropna().unique().astype(int))
+   default_age_range = (min(age_options), max(age_options))
 
 
    if select_all:
        selected_nationalities = nationality_options
        selected_genders = gender_options
-       selected_age_range = (min(age_options), max(age_options))
+       selected_age_range = default_age_range
    else:
        selected_nationalities = st.multiselect("Select Nationality", options=nationality_options)
        selected_genders = st.multiselect("Select Gender", options=gender_options)
-       selected_age_range = st.slider("Select Age Range", min_value=min(age_options), max_value=max(age_options), value=(min(age_options), max(age_options)))
+       selected_age_range = st.slider("Select Age Range", min_value=default_age_range[0], max_value=default_age_range[1], value=default_age_range)
 
 
-show_data = select_all or bool(selected_nationalities) or bool(selected_genders)
+show_data = select_all or bool(selected_nationalities) or bool(selected_genders) or selected_age_range != default_age_range
 
 
 
@@ -394,6 +461,8 @@ st.markdown(
        Dataset Variables Introduction
    </div>
    """, unsafe_allow_html=True)
+
+
 
 
 variables_description = [
@@ -413,6 +482,8 @@ variables_description = [
 ]
 
 
+
+
 for idx, (name, desc) in enumerate(variables_description, 1):
    st.markdown(
        f"""
@@ -420,6 +491,8 @@ for idx, (name, desc) in enumerate(variables_description, 1):
            {idx}. <span class="name">{name}:</span> <em>{desc}</em>
        </div>
        """, unsafe_allow_html=True)
+
+
 
 
 # ====== SHOW FILTERED DATA ======
@@ -432,6 +505,8 @@ st.markdown(
    <div class="divider-thick"></div>
    <div class="dataset-intro-text">Explore the filtered dataset below. Use the sidebar filters to narrow down results.</div>
    """, unsafe_allow_html=True)
+
+
 
 
 if show_data:
