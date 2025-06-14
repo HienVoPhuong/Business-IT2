@@ -234,7 +234,7 @@ if "reset" not in st.session_state:
 
 if st.sidebar.button("🔄 Reset Filters"):
     st.session_state.reset = True
-    st.experimental_rerun()
+    st.rerun()  # ✅ Sửa tại đây
 
 # Default filter values
 default_genders = df['Gender'].dropna().unique().tolist()
@@ -257,8 +257,6 @@ else:
 with st.spinner("Processing filters..."):
     time.sleep(0.5)
     filtered_df = apply_filters(df, selected_genders, selected_disorders, age_range).copy()
-
-
 
 # -------------------- MAIN CONTENT --------------------
 st.markdown('''
@@ -335,5 +333,3 @@ st.markdown('</div>', unsafe_allow_html=True)
 with st.expander("View Filtered Raw Data"):
     st.caption("Filtered dataset preview:")
     st.dataframe(filtered_df.reset_index(drop=True), use_container_width=True)
-
-
