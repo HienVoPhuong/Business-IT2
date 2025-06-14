@@ -235,46 +235,53 @@ default_disorders = DISORDER_ORDER
 min_age, max_age = int(df['Age'].min()), int(df['Age'].max())
 default_age_range = (min_age, max_age)
 
-# Initialize session state values
+# Initialize session state values (only if not present)
 if "selected_genders" not in st.session_state:
-    st.session_state.selected_genders = []
+    st.session_state.selected_genders = default_genders
 if "selected_disorders" not in st.session_state:
-    st.session_state.selected_disorders = []
+    st.session_state.selected_disorders = default_disorders
 if "age_range" not in st.session_state:
     st.session_state.age_range = default_age_range
 
 # Reset button
 if st.sidebar.button("🔄 Reset Filters"):
-    st.session_state.selected_genders = []
-    st.session_state.selected_disorders = []
+    st.session_state.selected_genders = default_genders
+    st.session_state.selected_disorders = default_disorders
     st.session_state.age_range = default_age_range
     st.rerun()
 
 # Sidebar inputs linked to session state
-selected_genders = st.sidebar.multiselect(
+st.sidebar.multiselect(
     "Select gender(s):",
     options=default_genders,
     default=st.session_state.selected_genders,
     key="selected_genders"
 )
 
-selected_disorders = st.sidebar.multiselect(
+st.sidebar.multiselect(
     "Select disorder types:",
     options=DISORDER_ORDER,
     default=st.session_state.selected_disorders,
     key="selected_disorders"
 )
 
-age_range = st.sidebar.slider(
+st.sidebar.slider(
     "Select age range:",
     min_value=min_age,
     max_value=max_age,
     value=st.session_state.age_range,
     key="age_range"
 )
+
+# Áp dụng filter theo session_state
 with st.spinner("Processing filters..."):
     time.sleep(0.5)
-    filtered_df = apply_filters(df, selected_genders, selected_disorders, age_range).copy()
+    filtered_df = apply_filters(
+        df,
+        st.session_state.selected_genders,
+        st.session_state.selected_disorders,
+        st.session_state.age_range
+    ).copy()
 
 # -------------------- MAIN CONTENT --------------------
 st.markdown('''
