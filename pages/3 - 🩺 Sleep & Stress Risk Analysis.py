@@ -248,7 +248,7 @@ if st.sidebar.button("🔄 Reset Filters"):
     st.session_state.selected_genders = []
     st.session_state.selected_disorders = []
     st.session_state.age_range = default_age_range
-    st.experimental_rerun()
+    st.rerun()
 
 # Sidebar inputs linked to session state, không chọn sẵn giá trị
 st.sidebar.multiselect(
