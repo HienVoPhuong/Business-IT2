@@ -10,7 +10,6 @@ st.set_page_config(page_title="Sleep Dataset Explorer", layout="wide", page_icon
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&display=swap');
-
 h1, h2, h3, h4, h5, h6, p, li, div, span, label,
 .stMarkdown, .stText, .stDataFrame, button, input, select, textarea {
     font-family: 'Merriweather', serif !important;
@@ -134,6 +133,7 @@ def load_lottie_file(filepath: str):
         return json.load(f)
 
 lottie_sleep = load_lottie_file("panda_sleep.json")
+
 if lottie_sleep:
     st_lottie(lottie_sleep, speed=1, loop=True, quality="high", height=300, key="sleep_animation")
 else:
@@ -154,21 +154,12 @@ metrics = [
     ("https://img.icons8.com/?size=96&id=HFPX8dOrlqo7&format=png", "532 records"),
     ("https://img.icons8.com/?size=96&id=80305&format=png", "15 columns"),
 ]
+
 for col, (icon, text) in zip(cols, metrics):
     col.markdown(f"""
-        <div class="fade-in" style="
-            background-color: #f7f9fa;
-            padding: 16px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            height: 120px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-        ">
+        <div class="fade-in" style="background-color: #f7f9fa; padding: 16px; border-radius: 12px;
+        text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); height: 120px; display: flex;
+        flex-direction: column; justify-content: center; align-items: center; width: 100%;">
             <img src="{icon}" width="48" style="margin-bottom: 8px;" />
             <span style="font-size: 18px; font-weight: bold;">{text}</span>
         </div>
@@ -181,7 +172,7 @@ st.markdown("""
         Dataset Overview
     </div>
     <div class="content-text fade-in">
-        This dataset contains rich records of sleep, health, and lifestyle data from a diverse group of participants. It includes key measures like sleep duration, sleep quality, physical activity, dietary habits, and health indicators such as stress levels and heart rate. Demographic and lifestyle information enables multifaceted analysis of sleep health.
+        This dataset contains rich records of sleep, health, and lifestyle data...
     </div>
 """, unsafe_allow_html=True)
 
@@ -192,7 +183,7 @@ st.markdown("""
         Why We Chose This Dataset
     </div>
     <div class="content-text fade-in">
-        The dataset combines objective data (sleep duration, blood pressure, steps) and subjective ratings (sleep quality, stress) with demographic details (age, gender, occupation). This multidimensional data allows in-depth exploration of lifestyle impacts on sleep and health, ideal for uncovering meaningful patterns.
+        The dataset combines objective data (sleep duration, blood pressure, steps)...
     </div>
 """, unsafe_allow_html=True)
 
@@ -208,25 +199,35 @@ df = load_data()
 # ====== SIDEBAR FILTERS ======
 with st.sidebar:
     st.markdown("<h3 style='font-family: Merriweather, serif; color:#004a99;'>Filter Dataset</h3>", unsafe_allow_html=True)
-
     nationality_options = sorted(df["Nationality"].dropna().unique().tolist())
     gender_options = sorted(df["Gender"].dropna().unique().tolist())
     age_options = sorted(df["Age"].dropna().unique().astype(int))
     default_age_range = (min(age_options), max(age_options))
 
     if st.button("Reset Filters"):
-        for key in ["selected_nationalities", "selected_genders", "selected_age_range"]:
-            if key in st.session_state:
-                del st.session_state[key]
-        st.rerun()  # ✅ NEW Streamlit-compatible rerun
+        st.session_state["selected_nationalities"] = []
+        st.session_state["selected_genders"] = []
+        st.session_state["selected_age_range"] = default_age_range
 
-    selected_nationalities = st.multiselect("Select Nationality", options=nationality_options, default=st.session_state.get("selected_nationalities", []))
-    selected_genders = st.multiselect("Select Gender", options=gender_options, default=st.session_state.get("selected_genders", []))
-    selected_age_range = st.slider("Select Age Range", min_value=default_age_range[0], max_value=default_age_range[1], value=st.session_state.get("selected_age_range", default_age_range))
+    selected_nationalities = st.multiselect(
+        "Select Nationality", options=nationality_options,
+        default=st.session_state.get("selected_nationalities", []),
+        key="selected_nationalities"
+    )
 
-    st.session_state["selected_nationalities"] = selected_nationalities
-    st.session_state["selected_genders"] = selected_genders
-    st.session_state["selected_age_range"] = selected_age_range
+    selected_genders = st.multiselect(
+        "Select Gender", options=gender_options,
+        default=st.session_state.get("selected_genders", []),
+        key="selected_genders"
+    )
+
+    selected_age_range = st.slider(
+        "Select Age Range",
+        min_value=default_age_range[0],
+        max_value=default_age_range[1],
+        value=st.session_state.get("selected_age_range", default_age_range),
+        key="selected_age_range"
+    )
 
 # ====== VARIABLE DESCRIPTION ======
 st.markdown('<hr class="custom-hr">', unsafe_allow_html=True)
@@ -260,7 +261,7 @@ for idx, (name, desc) in enumerate(variables_description, 1):
         </div>
     """, unsafe_allow_html=True)
 
-# ====== FILTERED DATA ======
+# ====== FILTER DATA ======
 filtered_df = df.copy()
 if selected_nationalities:
     filtered_df = filtered_df[filtered_df["Nationality"].isin(selected_nationalities)]
@@ -269,7 +270,7 @@ if selected_genders:
 if selected_age_range:
     filtered_df = filtered_df[(filtered_df["Age"] >= selected_age_range[0]) & (filtered_df["Age"] <= selected_age_range[1])]
 
-# ====== DATA DISPLAY ======
+# ====== DISPLAY DATA ======
 st.markdown("""
     <div class="custom-header fade-in">
         <img src="https://img.icons8.com/fluency/48/ms-excel.png" />
@@ -279,9 +280,10 @@ st.markdown("""
     <div class="dataset-intro-text fade-in">Explore the filtered dataset below. Use the sidebar filters to narrow down results.</div>
 """, unsafe_allow_html=True)
 
-st.markdown(f"""
-    <div class='fade-in'>Showing <span style='color:blue; font-weight:bold;'>{len(filtered_df):,}</span> 
-    of <span style='color:red; font-weight:bold;'>{len(df):,}</span> records</div>
-""", unsafe_allow_html=True)
+st.markdown(
+    f"""<div class='fade-in'>Showing <span style='color:blue; font-weight:bold;'>{len(filtered_df):,}</span> 
+    of <span style='color:red; font-weight:bold;'>{len(df):,}</span> records</div>""",
+    unsafe_allow_html=True
+)
 
 st.dataframe(filtered_df.reset_index(drop=True), use_container_width=True)
