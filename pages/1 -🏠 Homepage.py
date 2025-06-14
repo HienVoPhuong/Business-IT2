@@ -8,7 +8,7 @@ import json
 from streamlit.components.v1 import html
 
 # --- PAGE CONFIG ---
-st.set_page_config(page_title="Sleep Health & Lifestyle", page_icon="📌", layout="wide")
+st.set_page_config(page_title="Sleep Health & Lifestyle", page_icon="🛌", layout="wide")
 
 # --- MUSIC BACKGROUND ---
 def get_audio_base64(file_path):
@@ -24,15 +24,10 @@ audio_html = f"""
 """
 st.markdown(audio_html, unsafe_allow_html=True)
 
-# --- STYLING ---
+# --------- Font Styling ---------
 st.markdown("""
    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
-   <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
-   <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-   <script>
-     AOS.init({ once: true, duration: 1000 });
-   </script>
    <style>
        html, body, [class*="st-"], .stApp {
            font-family: 'Merriweather', serif !important;
@@ -59,13 +54,18 @@ st.markdown("""
 
 st.markdown('''
    <div class="fade-in-section">
-       <h1 class="colatin-title" data-aos="fade-down">Sleep Health and Lifestyle</h1>
+       <h1 style='text-align: center;
+                  background: -webkit-linear-gradient(45deg, #6C63FF, #20B2AA);
+                  -webkit-background-clip: text;
+                  -webkit-text-fill-color: transparent;
+                  font-weight: 750;
+                  font-size: 4.5em; 'class="colatin-title">Sleep Health and Lifestyle</h1>
    </div>
 ''', unsafe_allow_html=True)
 
 st.markdown(
    """
-   <p data-aos='fade-up' style='
+   <p style='
        text-align: center;
        font-size:25px;
        font-family: "Merriweather", serif;
@@ -84,7 +84,7 @@ def load_lottie_file(filepath: str):
 # --- RAIN EFFECT ---
 rain(emoji="💤", font_size=44, falling_speed=5, animation_length="2")
 
-# --- INTRO ---
+# --- INTRO WITH TYPING ---
 with st.empty():
     for line in [
         "We analyze how sleep patterns correlate with well-being.",
@@ -95,10 +95,8 @@ with st.empty():
         time.sleep(1.5)
 
 # --- HEADER ANIMATION ---
-st.markdown("<div data-aos='fade-up'>", unsafe_allow_html=True)
 lottie_animation = load_lottie_file("sleepy.json")
 st_lottie(lottie_animation, height=300, key="header_lottie")
-st.markdown("</div>", unsafe_allow_html=True)
 
 # --- TEAM SECTION ---
 st.markdown("<div id='team'></div>", unsafe_allow_html=True)
@@ -172,7 +170,7 @@ for member in team:
         img_src = "https://via.placeholder.com/220x220.png?text=No+Image"
 
     team_html += f"""
-    <div class='team-card' data-aos="zoom-in-up">
+    <div class='team-card'>
         <img src="{img_src}" alt="{member['name']}">
         <h4>{member['name']}</h4>
         <p>{member['id']}</p>
@@ -191,7 +189,7 @@ contact_animation = load_lottie_file("contact.json")
 st_lottie(contact_animation, height=200, key="contact_anim")
 
 st.markdown("""
-<div data-aos="flip-left" style='background-color: rgba(255, 245, 230, 0.9); padding: 30px; border-radius: 20px; box-shadow: 0 6px 18px rgba(0,0,0,0.1); max-width: 600px; margin: auto; animation: bounceIn 1.2s;'>
+<div style='background-color: rgba(255, 245, 230, 0.9); padding: 30px; border-radius: 20px; box-shadow: 0 6px 18px rgba(0,0,0,0.1); max-width: 600px; margin: auto; animation: bounceIn 1.2s;'>
     <form action="https://formsubmit.co/106240134@student.vgu.edu.vn" method="POST">
         <input type="hidden" name="_captcha" value="false">
         <input type="text" name="name" placeholder="Your name" required style='margin-bottom: 10px; width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ccc;'>
@@ -203,3 +201,5 @@ st.markdown("""
     </form>
 </div>
 """, unsafe_allow_html=True)
+
+
