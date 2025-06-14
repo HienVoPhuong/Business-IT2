@@ -11,13 +11,10 @@ st.markdown("""
        html, body, [class*="st-"], .stApp, .stSidebar, .stSidebarContent {
            font-family: 'Merriweather', serif !important;
        }
-       h1, h2, h3, h4, h5, h6, p, span, div, label, section, input, textarea, select {
-           font-family: 'Merriweather', serif !important;
-       }
    </style>
 """, unsafe_allow_html=True)
 
-# -------------------- CUSTOM CSS EFFECT --------------------
+# -------------------- CUSTOM CSS --------------------
 st.markdown("""
     <style>
         @keyframes fadeInUp {
@@ -43,14 +40,13 @@ DISORDER_ORDER = ['Sleep Apnea', 'Insomnia', 'None']
 COLOR_MAP = {'Sleep Apnea': '#E6A1B3', 'Insomnia': '#E66A6A', 'None': '#D8BFD8'}
 RIDGE_COLOR_MAP = {'Sleep Apnea': '#A7C7E7', 'Insomnia': '#FFD1A9', 'None': '#E66A6A'}
 
-# -------------------- DATA LOADING --------------------
+# -------------------- LOAD DATA --------------------
 @st.cache_data
 def load_data():
     df = pd.read_excel("Sleep Health Lifestyle Dataset.xlsx")
     df['Sleep Disorder'] = df['Sleep Disorder'].fillna('None')
     return df
 
-# -------------------- FILTER FUNCTION --------------------
 def apply_filters(data, genders, disorders, age_range):
     df = data.copy()
     if genders:
@@ -60,7 +56,6 @@ def apply_filters(data, genders, disorders, age_range):
     df = df[df['Age'].between(age_range[0], age_range[1])]
     return df
 
-# -------------------- PIE CHART FUNCTION --------------------
 def plot_pie_chart(data):
     counts = data['Sleep Disorder'].value_counts().reindex(DISORDER_ORDER).fillna(0)
     filtered_counts = counts[counts > 0]
@@ -97,7 +92,6 @@ def plot_pie_chart(data):
     plt.close(fig)
     return counts
 
-# -------------------- RIDGELINE PLOT FUNCTION --------------------
 def plot_ridgeline(data):
     valid_counts = data['Sleep Disorder'].value_counts()
     valid_disorders = valid_counts[valid_counts > 1].index.tolist()
@@ -120,7 +114,6 @@ def plot_ridgeline(data):
     plt.close(fig)
     return ridge_df
 
-# -------------------- INTERPRETATION GENERATORS --------------------
 def generate_dynamic_analysis(counts, ridge_df):
     total = counts.sum()
     dominant = counts.idxmax() if total > 0 else None
@@ -174,7 +167,7 @@ def generate_demographic_insight(filtered_df):
             return f'<span style="color:gray;">N/A</span>'
     if 'Gender' in filtered_df.columns and not filtered_df.empty:
         gender_groups = filtered_df.groupby('Gender', observed=False)
-        insights += "<strong>\ud83d\udd38Gender-Based Observations</strong><br><br>"
+        insights += "<strong>🔸Gender-Based Observations</strong><br><br>"
         for gender, group in gender_groups:
             disorder_ratio = group['Sleep Disorder'].value_counts(normalize=True) * 100
             dominant_disorder = disorder_ratio.idxmax()
@@ -187,7 +180,7 @@ def generate_demographic_insight(filtered_df):
         age_labels = ["<25", "25-40", "40-60", "60+"]
         filtered_df = filtered_df.copy()
         filtered_df['Age Group'] = pd.cut(filtered_df['Age'], bins=age_bins, labels=age_labels)
-        insights += "<br><strong>\ud83d\udd38Age Group Insights</strong><br><br>"
+        insights += "<br><strong>🔸Age Group Insights</strong><br><br>"
         age_groups = filtered_df.groupby('Age Group', observed=False)
         for label, group in age_groups:
             if group.empty:
@@ -205,36 +198,32 @@ df = load_data()
 if df.empty:
     st.stop()
 
-# -------------------- SIDEBAR FILTERS --------------------
+# -------------------- SIDEBAR --------------------
 st.sidebar.title("Filters")
 genders = df['Gender'].dropna().unique().tolist()
 min_age, max_age = int(df['Age'].min()), int(df['Age'].max())
 
-if st.sidebar.button("\ud83d\udd04 Reset Filters"):
+# ✅ FIXED: No emoji in button label
+if st.sidebar.button("Reset Filters"):
     st.session_state.selected_genders = []
     st.session_state.selected_disorders = []
     st.session_state.age_range = (min_age, max_age)
-    st.rerun()
+    st.experimental_rerun()
 
-selected_genders = st.sidebar.multiselect(
-    "Select gender(s):", options=genders,
-    default=st.session_state.get('selected_genders', [])
-)
-selected_disorders = st.sidebar.multiselect(
-    "Select disorder types:", options=DISORDER_ORDER,
-    default=st.session_state.get('selected_disorders', [])
-)
-age_range = st.sidebar.slider(
-    "Select age range:", min_value=min_age, max_value=max_age,
-    value=st.session_state.get('age_range', (min_age, max_age))
-)
+# Widgets with state
+selected_genders = st.sidebar.multiselect("Select gender(s):", options=genders, default=st.session_state.get('selected_genders', []))
+selected_disorders = st.sidebar.multiselect("Select disorder types:", options=DISORDER_ORDER, default=st.session_state.get('selected_disorders', []))
+age_range = st.sidebar.slider("Select age range:", min_value=min_age, max_value=max_age, value=st.session_state.get('age_range', (min_age, max_age)))
 
+# Save to session state
 st.session_state.selected_genders = selected_genders
 st.session_state.selected_disorders = selected_disorders
 st.session_state.age_range = age_range
 
+# Apply filters
 filtered_df = apply_filters(df, selected_genders, selected_disorders, age_range)
 
+# -------------------- MAIN CONTENT --------------------
 st.markdown("""
     <div class="fade-in-section">
         <h1 style='text-align: center;
@@ -249,12 +238,9 @@ st.markdown("<p style='text-align: center; font-size:18px;'>Visualizing the prop
 
 col1, col2 = st.columns(2)
 with col1:
-    with st.spinner("Loading sleep disorder chart..."):
-        disorder_counts = plot_pie_chart(filtered_df)
-
+    disorder_counts = plot_pie_chart(filtered_df)
 with col2:
-    with st.spinner("Generating stress level plot..."):
-        ridge_data = plot_ridgeline(filtered_df)
+    ridge_data = plot_ridgeline(filtered_df)
 
 pie_en, ridge_en = generate_dynamic_analysis(disorder_counts, ridge_data)
 demographic_en = generate_demographic_insight(filtered_df)
@@ -280,6 +266,7 @@ with col_b:
     </div>
     """, unsafe_allow_html=True)
 
-with st.expander("\ud83d\udcc4 View Filtered Raw Data"):
+# -------------------- RAW DATA --------------------
+with st.expander("📄 View Filtered Raw Data"):
     st.caption("Filtered dataset preview:")
     st.dataframe(filtered_df.reset_index(drop=True), use_container_width=True)
