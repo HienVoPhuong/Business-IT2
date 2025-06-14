@@ -270,7 +270,7 @@ st.sidebar.slider(
     key="age_range"
 )
 
-# Áp dụng filter theo session_state
+
 with st.spinner("Processing filters..."):
     time.sleep(0.5)
     filtered_df = df.copy()
@@ -279,7 +279,14 @@ with st.spinner("Processing filters..."):
     if st.session_state.selected_disorders:
         filtered_df = filtered_df[filtered_df['Sleep Disorder'].isin(st.session_state.selected_disorders)]
     filtered_df = filtered_df[filtered_df['Age'].between(st.session_state.age_range[0], st.session_state.age_range[1])]
-
+   
+if st.session_state.get("play_sound", False):
+    st.markdown("""
+    <audio autoplay>
+        <source src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" type="audio/mpeg">
+    </audio>
+    """, unsafe_allow_html=True)
+    st.session_state["play_sound"] = False
 # -------------------- MAIN CONTENT --------------------
 st.markdown('''
     <div class="fade-in-section">
