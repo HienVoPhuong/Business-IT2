@@ -43,8 +43,8 @@ st.markdown("""
   document.addEventListener("DOMContentLoaded", function() {
     AOS.init({
       once: true,
-      duration: 500,
-      offset: 9900
+      duration: 100,
+      offset: 100
     });
   });
 </script>
