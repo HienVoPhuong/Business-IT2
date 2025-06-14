@@ -183,7 +183,7 @@ st.markdown("""
         Why We Chose This Dataset
     </div>
     <div class="content-text fade-in">
-        The dataset combines objective data (sleep duration, blood pressure, steps)...
+          The dataset combines objective data (sleep duration, blood pressure, steps) and subjective ratings (sleep quality, stress) with demographic details (age, gender, occupation). This multidimensional data allows for in-depth exploration of lifestyle impacts on sleep and health, which is ideal for uncovering meaningful patterns.
     </div>
 """, unsafe_allow_html=True)
 
