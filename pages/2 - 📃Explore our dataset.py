@@ -242,7 +242,7 @@ if st.session_state.get("play_sound", False):
     <script>
     const audio = document.getElementById("click-audio");
     if (audio) {
-        audio.playbackRate = 2.0;
+        audio.playbackRate = 2.5;
         audio.play();
     }
     </script>
