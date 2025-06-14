@@ -272,5 +272,5 @@ if selected_genders:
 if selected_age_range:
     filtered_df = filtered_df[(filtered_df["Age"] >= selected_age_range[0]) & (filtered_df["Age"] <= selected_age_range[1])]
 
-st.markdown(f"Showing {len(filtered_df):,} of {len(df):,} records")
+st.markdown(f"Showing **{len(filtered_df):,}** of **{len(df):,}** records")
 st.dataframe(filtered_df.reset_index(drop=True), use_container_width=True)
