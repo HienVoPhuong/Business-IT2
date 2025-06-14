@@ -35,21 +35,6 @@ st.markdown("""
    </style>
 """, unsafe_allow_html=True)
 
-st.markdown("""
-<!-- AOS Animation Library -->
-<link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    AOS.init({
-      once: true,
-      duration: 100,
-      offset: 100
-    });
-  });
-</script>
-""", unsafe_allow_html=True)
-
 # -------------------- CUSTOM CSS EFFECT --------------------
 st.markdown("""
     <style>
@@ -385,7 +370,7 @@ col_a, col_b = st.columns(2)
 with col_a:
     st.markdown(
         f"""
-        <div class="insight-box" data-aos="fade-right" style="padding:20px; background-color:#f9f9f9; border-left: 5px solid #6C63FF; border-radius:10px; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.05);">
+        <div class="insight-box" style="padding:20px; background-color:#f9f9f9; border-left: 5px solid #6C63FF; border-radius:10px; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.05);">
             <h3 style="margin-top:0; color:#333;">General Insights</h3>
             <p style="font-size:16px;">{pie_en}</p>
             <p style="font-size:16px;">{ridge_en}</p>
@@ -399,15 +384,17 @@ with col_a:
         """, unsafe_allow_html=True
     )
 
+
 with col_b:
     st.markdown(
         f"""
-        <div class="insight-box" data-aos="fade-left" style="padding:20px; background-color:white; border-left: 5px solid #20B2AA; border-radius:10px; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.05);">
+        <div class="insight-box" style="padding:20px; background-color:white; border-left: 5px solid #20B2AA; border-radius:10px; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.05);">
             <h3 style="margin-top:0; color:#333;">Demographic Patterns</h3>
             <p style="font-size:16px;">{demographic_en}</p>
         </div>
         """, unsafe_allow_html=True
     )
+st.markdown('</div>', unsafe_allow_html=True)
 
 
 # -------------------- RAW DATA --------------------
