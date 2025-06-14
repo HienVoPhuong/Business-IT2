@@ -172,7 +172,7 @@ st.markdown("""
         Dataset Overview
     </div>
     <div class="content-text fade-in">
-        This dataset contains rich records of sleep, health, and lifestyle data...
+         This dataset contains rich records of sleep, health, and lifestyle data from a diverse group of participants. It includes key measures like sleep duration, sleep quality, physical activity, dietary habits, and health indicators such as stress levels and heart rate. Demographic and lifestyle information enables multifaceted analysis of sleep health.
     </div>
 """, unsafe_allow_html=True)
 
