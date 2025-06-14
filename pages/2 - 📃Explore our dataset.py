@@ -236,21 +236,18 @@ with st.sidebar:
 
 if st.session_state.get("play_sound", False):
     st.markdown("""
-    <audio id="click-audio" preload="auto">
+    <audio id="click-audio" autoplay>
         <source src="https://www.myinstants.com/media/sounds/mouse-click.mp3" type="audio/mpeg">
     </audio>
     <script>
     const audio = document.getElementById("click-audio");
     if (audio) {
-        audio.pause(); // dừng nếu đã phát trước đó
-        audio.currentTime = 0; // tua lại đầu
-        audio.playbackRate = 2.5; // chỉnh tốc độ phát trước khi play
-        audio.play().catch(e => console.log("Audio play failed:", e));
+        audio.playbackRate = 2.5;
+        audio.play();
     }
     </script>
     """, unsafe_allow_html=True)
-    
-    st.session_state["play_sound"] = False
+    st.session_state["play_sound"] = False 
     
 # ====== VARIABLE DESCRIPTION ======
 st.markdown('<hr class="custom-hr">', unsafe_allow_html=True)
