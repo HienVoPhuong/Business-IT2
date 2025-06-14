@@ -70,7 +70,6 @@ st.sidebar.header("Filter by Age")
 min_age = int(df['Age'].min())
 max_age = int(df['Age'].max())
 
-# Khởi tạo session_state nếu chưa có
 if 'selected_age' not in st.session_state:
     st.session_state.selected_age = (min_age, max_age)
 if 'filter_sleep_quality' not in st.session_state:
@@ -78,14 +77,12 @@ if 'filter_sleep_quality' not in st.session_state:
 if 'filter_high_hr' not in st.session_state:
     st.session_state.filter_high_hr = False
 
-# Nút reset filter
 if st.sidebar.button("🔄 Reset Filters"):
     st.session_state.selected_age = (min_age, max_age)
     st.session_state.filter_sleep_quality = False
     st.session_state.filter_high_hr = False
     st.rerun()
 
-# Slider age range với session_state
 selected_age = st.sidebar.slider(
     "Select Age Range",
     min_value=min_age,
