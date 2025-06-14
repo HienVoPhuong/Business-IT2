@@ -10,14 +10,10 @@ st.set_page_config(page_title="Sleep Dataset Explorer", layout="wide", page_icon
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&display=swap');
-
-/* Font setup */
 h1, h2, h3, h4, h5, h6, p, li, div, span, label,
 .stMarkdown, .stText, .stDataFrame, button, input, select, textarea {
     font-family: 'Merriweather', serif !important;
 }
-
-/* Layout */
 .main .block-container {
    padding-left: 2rem !important;
    padding-right: 2rem !important;
@@ -25,8 +21,6 @@ h1, h2, h3, h4, h5, h6, p, li, div, span, label,
    padding-top: 1rem !important;
    padding-bottom: 1rem !important;
 }
-
-/* Heading */
 .main-heading {
    font-size: 3.1rem;
    font-weight: 900;
@@ -36,8 +30,6 @@ h1, h2, h3, h4, h5, h6, p, li, div, span, label,
    text-align: center;
    text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
 }
-
-/* Fade-in Animation */
 .fade-in {
     opacity: 0;
     animation: fadeIn ease 3.5s;
@@ -47,8 +39,6 @@ h1, h2, h3, h4, h5, h6, p, li, div, span, label,
     0%   { opacity: 0; transform: translateY(30px); }
     100% { opacity: 1; transform: translateY(0); }
 }
-
-/* Sections */
 .sub-heading {
    font-size: 1.4rem;
    font-weight: 700;
@@ -134,12 +124,12 @@ hr.custom-hr {
 </style>
 """, unsafe_allow_html=True)
 
-# ====== TITLE (NO ANIMATION) ======
+# ====== TITLE ======
 st.markdown('''
     <h1 class="main-heading">Sleep Dataset Explorer</h1>
 ''', unsafe_allow_html=True)
 
-# ====== Load Lottie Animation ======
+# ====== Load Lottie ======
 def load_lottie_file(filepath: str):
     with open(filepath, "r") as f:
         return json.load(f)
@@ -151,17 +141,16 @@ if lottie_sleep:
 else:
     st.error("Failed to load animation")
 
-# ====== SUBTITLE (FADE-IN) ======
-st.markdown(
-    """
+# ====== SUBTITLE ======
+st.markdown("""
     <div class="sub-heading fade-in">
         <img src="https://img.icons8.com/fluency/48/open-book.png" width="30" />
         Explore and Filter Sleep Data
     </div>
     <div class="sub-sub-heading fade-in">Dive deep into the insights behind sleep and lifestyle.</div>
-    """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
-# ====== METRICS (FADE-IN) ======
+# ====== METRICS ======
 cols = st.columns(2)
 metrics = [
     ("https://img.icons8.com/?size=96&id=HFPX8dOrlqo7&format=png", "532 records"),
@@ -169,47 +158,34 @@ metrics = [
 ]
 
 for col, (icon, text) in zip(cols, metrics):
-    col.markdown(
-        f"""
-        <div class="fade-in" style="
-            background-color: #f7f9fa;
-            padding: 16px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            height: 120px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-        ">
+    col.markdown(f"""
+        <div class="fade-in" style="background-color: #f7f9fa; padding: 16px; border-radius: 12px;
+        text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); height: 120px;
+        display: flex; flex-direction: column; justify-content: center; align-items: center;">
             <img src="{icon}" width="48" style="margin-bottom: 8px;" />
             <span style="font-size: 18px; font-weight: bold;">{text}</span>
         </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    """, unsafe_allow_html=True)
 
-# ====== DATASET OVERVIEW (FADE-IN) ======
+# ====== OVERVIEW SECTION ======
 st.markdown("""
     <div class="section-title fade-in">
         <img src="https://img.icons8.com/fluency/24/data-configuration.png" />
         Dataset Overview
     </div>
     <div class="content-text fade-in">
-        This dataset contains rich records of sleep, health, and lifestyle data from a diverse group of participants. It includes key measures like sleep duration, sleep quality, physical activity, dietary habits, and health indicators such as stress levels and heart rate. Demographic and lifestyle information enables multifaceted analysis of sleep health.
+        This dataset contains rich records of sleep, health, and lifestyle data from a diverse group of participants. It includes key measures like sleep duration, sleep quality, physical activity, dietary habits, and health indicators such as stress levels and heart rate.
     </div>
 """, unsafe_allow_html=True)
 
-# ====== WHY CHOOSE THIS DATASET (FADE-IN) ======
+# ====== WHY THIS DATASET ======
 st.markdown("""
     <div class="section-title fade-in">
         <img src="https://img.icons8.com/fluency/24/why-us-female.png" />
         Why We Chose This Dataset
     </div>
     <div class="content-text fade-in">
-        The dataset combines objective data (sleep duration, blood pressure, steps) and subjective ratings (sleep quality, stress) with demographic details (age, gender, occupation). This multidimensional data allows in-depth exploration of lifestyle impacts on sleep and health, ideal for uncovering meaningful patterns.
+        The dataset combines objective data and subjective ratings with demographic details. This multidimensional data allows in-depth exploration of lifestyle impacts on sleep and health.
     </div>
 """, unsafe_allow_html=True)
 
@@ -222,29 +198,46 @@ def load_data():
 
 df = load_data()
 
-# ====== SIDEBAR FILTERS + RESET ======
+# ====== SIDEBAR FILTERS ======
 with st.sidebar:
     st.markdown("<h3 style='font-family: Merriweather, serif; color:#004a99;'>Filter Dataset</h3>", unsafe_allow_html=True)
+
     nationality_options = sorted(df["Nationality"].dropna().unique().tolist())
     gender_options = sorted(df["Gender"].dropna().unique().tolist())
     age_options = sorted(df["Age"].dropna().unique().astype(int))
     default_age_range = (min(age_options), max(age_options))
 
-    reset = st.button("Reset Filters")
-    if reset:
-        st.session_state["selected_nationalities"] = []
-        st.session_state["selected_genders"] = []
-        st.session_state["selected_age_range"] = default_age_range
+    # Initialize session_state
+    if "selected_nationalities" not in st.session_state:
+        st.session_state.selected_nationalities = []
+    if "selected_genders" not in st.session_state:
+        st.session_state.selected_genders = []
+    if "selected_age_range" not in st.session_state:
+        st.session_state.selected_age_range = default_age_range
 
-    selected_nationalities = st.multiselect("Select Nationality", options=nationality_options, default=st.session_state.get("selected_nationalities", []))
-    selected_genders = st.multiselect("Select Gender", options=gender_options, default=st.session_state.get("selected_genders", []))
-    selected_age_range = st.slider("Select Age Range", min_value=default_age_range[0], max_value=default_age_range[1], value=st.session_state.get("selected_age_range", default_age_range))
+    if st.button("Reset Filters"):
+        st.session_state.selected_nationalities = []
+        st.session_state.selected_genders = []
+        st.session_state.selected_age_range = default_age_range
+        st.experimental_rerun()
 
-    st.session_state["selected_nationalities"] = selected_nationalities
-    st.session_state["selected_genders"] = selected_genders
-    st.session_state["selected_age_range"] = selected_age_range
+    selected_nationalities = st.multiselect(
+        "Select Nationality", options=nationality_options,
+        default=st.session_state.selected_nationalities, key="selected_nationalities"
+    )
+    selected_genders = st.multiselect(
+        "Select Gender", options=gender_options,
+        default=st.session_state.selected_genders, key="selected_genders"
+    )
+    selected_age_range = st.slider(
+        "Select Age Range",
+        min_value=default_age_range[0],
+        max_value=default_age_range[1],
+        value=st.session_state.selected_age_range,
+        key="selected_age_range"
+    )
 
-# ====== VARIABLE DESCRIPTION (FADE-IN) ======
+# ====== VARIABLE DESCRIPTIONS ======
 st.markdown('<hr class="custom-hr">', unsafe_allow_html=True)
 st.markdown("""
     <div class="custom-header fade-in">
@@ -270,24 +263,25 @@ variables_description = [
 ]
 
 for idx, (name, desc) in enumerate(variables_description, 1):
-    st.markdown(
-        f"""
+    st.markdown(f"""
         <div class="variable-entry fade-in">
             {idx}. <span class="name">{name}:</span> <em>{desc}</em>
         </div>
-        """,
-        unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
-# ====== FILTERED DATA ======
+# ====== FILTER DATA ======
 filtered_df = df.copy()
 if selected_nationalities:
     filtered_df = filtered_df[filtered_df["Nationality"].isin(selected_nationalities)]
 if selected_genders:
     filtered_df = filtered_df[filtered_df["Gender"].isin(selected_genders)]
 if selected_age_range:
-    filtered_df = filtered_df[(filtered_df["Age"] >= selected_age_range[0]) & (filtered_df["Age"] <= selected_age_range[1])]
+    filtered_df = filtered_df[
+        (filtered_df["Age"] >= selected_age_range[0]) &
+        (filtered_df["Age"] <= selected_age_range[1])
+    ]
 
-# ====== DATA DISPLAY SECTION ======
+# ====== DISPLAY FILTERED DATA ======
 st.markdown("""
     <div class="custom-header fade-in">
         <img src="https://img.icons8.com/fluency/48/ms-excel.png" />
@@ -297,10 +291,9 @@ st.markdown("""
     <div class="dataset-intro-text fade-in">Explore the filtered dataset below. Use the sidebar filters to narrow down results.</div>
 """, unsafe_allow_html=True)
 
-st.markdown(
-    f"""<div class='fade-in'>Showing <span style='color:blue; font-weight:bold;'>{len(filtered_df):,}</span> 
-    of <span style='color:red; font-weight:bold;'>{len(df):,}</span> records</div>""",
-    unsafe_allow_html=True
-)
+st.markdown(f"""
+    <div class='fade-in'>Showing <span style='color:blue; font-weight:bold;'>{len(filtered_df):,}</span>
+    of <span style='color:red; font-weight:bold;'>{len(df):,}</span> records</div>
+""", unsafe_allow_html=True)
 
 st.dataframe(filtered_df.reset_index(drop=True), use_container_width=True)
