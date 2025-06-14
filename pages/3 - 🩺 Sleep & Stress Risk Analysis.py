@@ -6,6 +6,8 @@ import joypy
 import time
 
 # -------------------- PAGE CONFIG --------------------
+st.set_page_config(page_title="Sleep Dashboard", layout="wide")
+
 st.markdown("""
    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
    <style>
@@ -27,7 +29,6 @@ st.markdown("""
    </style>
 """, unsafe_allow_html=True)
 
-# -------------------- CUSTOM CSS EFFECT --------------------
 st.markdown("""
     <style>
         @keyframes fadeInUp {
@@ -44,13 +45,6 @@ st.markdown("""
         }
         .insight-box {
             transition: all 0.3s ease;
-        }
-        .stDataFrame thead tr th {
-            background-color: #f0f2f6;
-            color: #333;
-        }
-        .stDataFrame tbody tr:hover {
-            background-color: #f6f6f6;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -137,7 +131,7 @@ def plot_ridgeline(data):
     plt.close(fig)
     return ridge_df
 
-# -------------------- INTERPRETATION GENERATOR --------------------
+# -------------------- INTERPRETATION FUNCTIONS --------------------
 def generate_dynamic_analysis(counts, ridge_df):
     total = counts.sum()
     dominant = counts.idxmax() if total > 0 else None
@@ -175,7 +169,6 @@ def generate_dynamic_analysis(counts, ridge_df):
         )
     return pie_summary, ridge_summary
 
-# -------------------- DEMOGRAPHIC INSIGHT GENERATOR --------------------
 def generate_demographic_insight(filtered_df):
     insights = ""
     BADGE_COLOR = COLOR_MAP
@@ -227,78 +220,67 @@ if df.empty:
     st.stop()
 
 # -------------------- SIDEBAR FILTERS --------------------
+if "reset" not in st.session_state:
+    st.session_state.reset = False
+
 st.sidebar.title("Filters")
+
+# Reset button
+if st.sidebar.button("🔄 Reset Filters"):
+    st.session_state.reset = True
+
+# Default values
 genders = df['Gender'].dropna().unique().tolist()
 min_age, max_age = int(df['Age'].min()), int(df['Age'].max())
 
-if 'reset' not in st.session_state:
-    st.session_state['reset'] = False
-
-if st.sidebar.button("🔄 Reset Filters"):
-    st.session_state['reset'] = True
-    st.rerun()
-
-if st.session_state['reset']:
-    selected_genders = []
-    selected_disorders = []
-    age_range = (min_age, max_age)
-    st.session_state['reset'] = False
+# Filters
+if st.session_state.reset:
+    selected_genders = st.sidebar.multiselect("Select gender(s):", options=genders, default=[], key="gender_reset")
+    selected_disorders = st.sidebar.multiselect("Select disorder types:", options=DISORDER_ORDER, default=[], key="disorder_reset")
+    age_range = st.sidebar.slider("Select age range:", min_age, max_age, (min_age, max_age), key="age_reset")
+    st.session_state.reset = False
 else:
-    selected_genders = st.sidebar.multiselect("Select gender(s):", options=genders, default=[])
-    selected_disorders = st.sidebar.multiselect("Select disorder types:", options=DISORDER_ORDER, default=[])
-    age_range = st.sidebar.slider("Select age range:", min_age, max_age, (min_age, max_age))
+    selected_genders = st.sidebar.multiselect("Select gender(s):", options=genders, key="gender_reset")
+    selected_disorders = st.sidebar.multiselect("Select disorder types:", options=DISORDER_ORDER, key="disorder_reset")
+    age_range = st.sidebar.slider("Select age range:", min_age, max_age, key="age_reset")
 
 with st.spinner("Processing filters..."):
     time.sleep(0.5)
     filtered_df = apply_filters(df, selected_genders, selected_disorders, age_range).copy()
 
 # -------------------- MAIN CONTENT --------------------
-st.markdown('''
-    <div class="fade-in-section">
-        <h1 style='text-align: center;
+st.markdown('''<div class="fade-in-section"><h1 style='text-align: center;
                    background: -webkit-linear-gradient(45deg, #6C63FF, #20B2AA);
                    -webkit-background-clip: text;
                    -webkit-text-fill-color: transparent;
                    font-weight: 800;
-                   font-size: 2.5em;'>Sleep Disorders & Stress Level Analysis</h1>
-    </div>
-''', unsafe_allow_html=True)
-st.markdown(
-    "<p style='text-align: center; font-size:18px;'>Visualizing the proportion of sleep disorders and how stress levels distribute across them.</p>", 
-    unsafe_allow_html=True
-)
+                   font-size: 2.5em;'>Sleep Disorders & Stress Level Analysis</h1></div>''', unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; font-size:18px;'>Visualizing the proportion of sleep disorders and how stress levels distribute across them.</p>", unsafe_allow_html=True)
 
 col1, col2 = st.columns(2)
 with col1:
     with st.spinner("Loading sleep disorder chart..."):
         time.sleep(0.8)
-        st.markdown('<div class="fade-in-section">', unsafe_allow_html=True)
         st.subheader("Sleep Disorder Proportion")
         disorder_counts = plot_pie_chart(filtered_df)
-        st.markdown('</div>', unsafe_allow_html=True)
 
 with col2:
     with st.spinner("Generating stress level plot..."):
         time.sleep(0.8)
-        st.markdown('<div class="fade-in-section">', unsafe_allow_html=True)
         st.subheader("Stress Level Distribution by Disorder")
         ridge_data = plot_ridgeline(filtered_df)
-        st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------- INTERPRETATION --------------------
 pie_en, ridge_en = generate_dynamic_analysis(disorder_counts, ridge_data)
 demographic_en = generate_demographic_insight(filtered_df)
 
 st.markdown("---")
-st.markdown('<div class="fade-in-section">', unsafe_allow_html=True)
 st.subheader("Analytical Summary")
-st.markdown("This analytical summary is displayed based on the chosen filter criteria")
 col_a, col_b = st.columns(2)
 
 with col_a:
-    st.markdown(
-        f"""
-        <div class="insight-box" style="padding:20px; background-color:#f9f9f9; border-left: 5px solid #6C63FF; border-radius:10px; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.05);">
+    st.markdown(f"""
+        <div class="insight-box" style="padding:20px; background-color:#f9f9f9; border-left: 5px solid #6C63FF; border-radius:10px;">
             <h3 style="margin-top:0; color:#333;">General Insights</h3>
             <p style="font-size:16px;">{pie_en}</p>
             <p style="font-size:16px;">{ridge_en}</p>
@@ -309,19 +291,15 @@ with col_a:
                 <span style="color:#e4444e; font-weight:bold;">High ≥ 7</span>
             </p>
         </div>
-        """, unsafe_allow_html=True
-    )
+    """, unsafe_allow_html=True)
 
 with col_b:
-    st.markdown(
-        f"""
-        <div class="insight-box" style="padding:20px; background-color:white; border-left: 5px solid #20B2AA; border-radius:10px; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.05);">
+    st.markdown(f"""
+        <div class="insight-box" style="padding:20px; background-color:white; border-left: 5px solid #20B2AA; border-radius:10px;">
             <h3 style="margin-top:0; color:#333;">Demographic Patterns</h3>
             <p style="font-size:16px;">{demographic_en}</p>
         </div>
-        """, unsafe_allow_html=True
-    )
-st.markdown('</div>', unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
 # -------------------- RAW DATA --------------------
 with st.expander("View Filtered Raw Data"):
