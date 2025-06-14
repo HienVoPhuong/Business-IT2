@@ -41,7 +41,7 @@ h1, h2, h3, h4, h5, h6, p, li, div, span, label,
 .fade-in {
     opacity: 0;
     animation: fadeIn ease 3s;
-    animation-fill-mode: left;
+    animation-fill-mode: forwards;
 }
 @keyframes fadeIn {
     0%   { opacity: 0; transform: translateY(30px); }
