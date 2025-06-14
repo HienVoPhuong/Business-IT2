@@ -237,7 +237,7 @@ if 'reset' not in st.session_state:
 
 if st.sidebar.button("🔄 Reset Filters"):
     st.session_state['reset'] = True
-    st.experimental_rerun()
+    st.rerun()
 
 if st.session_state['reset']:
     selected_genders = []
