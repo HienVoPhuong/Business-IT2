@@ -228,41 +228,15 @@ if df.empty:
 
 # -------------------- SIDEBAR FILTERS --------------------
 st.sidebar.title("Filters")
-
-# Default values
 genders = df['Gender'].dropna().unique().tolist()
+selected_genders = st.sidebar.multiselect("Select gender(s):", options=genders, default=[])
+selected_disorders = st.sidebar.multiselect("Select disorder types:", options=DISORDER_ORDER, default=[])
 min_age, max_age = int(df['Age'].min()), int(df['Age'].max())
+age_range = st.sidebar.slider("Select age range:", min_age, max_age, (min_age, max_age))
 
-# Initialize session state if not already
-if 'selected_genders' not in st.session_state:
-    st.session_state.selected_genders = []
-if 'selected_disorders' not in st.session_state:
-    st.session_state.selected_disorders = []
-if 'age_range' not in st.session_state:
-    st.session_state.age_range = (min_age, max_age)
-
-# Reset logic
-if st.sidebar.button("🔄 Reset Filters"):
-    st.session_state.selected_genders = []
-    st.session_state.selected_disorders = []
-    st.session_state.age_range = (min_age, max_age)
-
-# Sidebar filter widgets (values bound to session_state)
-selected_genders = st.sidebar.multiselect(
-    "Select gender(s):", options=genders,
-    default=st.session_state.selected_genders,
-    key='selected_genders'
-)
-selected_disorders = st.sidebar.multiselect(
-    "Select disorder types:", options=DISORDER_ORDER,
-    default=st.session_state.selected_disorders,
-    key='selected_disorders'
-)
-age_range = st.sidebar.slider(
-    "Select age range:", min_age, max_age,
-    value=st.session_state.age_range,
-    key='age_range'
-)
+with st.spinner("Processing filters..."):
+    time.sleep(0.5)
+    filtered_df = apply_filters(df, selected_genders, selected_disorders, age_range).copy()
 
 # -------------------- MAIN CONTENT --------------------
 st.markdown('''
