@@ -303,19 +303,14 @@ if df.empty:
     st.stop()
 
 
+# -------------------- SIDEBAR FILTERS --------------------
 st.sidebar.title("Filters")
-
 genders = df['Gender'].dropna().unique().tolist()
+selected_genders = st.sidebar.multiselect("Select gender(s):", options=genders, default=genders)
+selected_disorders = st.sidebar.multiselect("Select disorder types:", options=DISORDER_ORDER, default=DISORDER_ORDER)
 min_age, max_age = int(df['Age'].min()), int(df['Age'].max())
+age_range = st.sidebar.slider("Select age range:", min_age, max_age, (min_age, max_age))
 
-with st.sidebar.expander("Select gender(s)", expanded=True):
-    selected_genders = st.multiselect("", options=genders, default=genders)
-
-with st.sidebar.expander("Select disorder types", expanded=True):
-    selected_disorders = st.multiselect("", options=DISORDER_ORDER, default=DISORDER_ORDER)
-
-with st.sidebar.expander("Select age range", expanded=True):
-    age_range = st.slider("", min_age, max_age, (min_age, max_age))
 
 with st.spinner("Processing filters..."):
     time.sleep(0.5)
