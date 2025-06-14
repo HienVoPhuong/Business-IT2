@@ -273,7 +273,8 @@ if selected_age_range:
     filtered_df = filtered_df[(filtered_df["Age"] >= selected_age_range[0]) & (filtered_df["Age"] <= selected_age_range[1])]
 
 st.markdown(
-    f"Showing <b style='color:blue;'{len(filtered_df):,}</b> of <b style='color:red;'>{len(df):,}</b> records",
+    f"""Showing <span style='color:blue; font-weight:bold;'>{len(filtered_df):,}</span> 
+    of <span style='color:red; font-weight:bold;'>{len(df):,}</span> records""",
     unsafe_allow_html=True
 )
 st.dataframe(filtered_df.reset_index(drop=True), use_container_width=True)
