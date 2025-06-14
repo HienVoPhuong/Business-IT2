@@ -303,7 +303,7 @@ if df.empty:
     st.stop()
 
 
- -------------------- SIDEBAR FILTERS --------------------
+# -------------------- SIDEBAR FILTERS --------------------
 st.sidebar.title("Filters")
 genders = df['Gender'].dropna().unique().tolist()
 selected_genders = st.sidebar.multiselect("Select gender(s):", options=genders, default=genders)
@@ -315,7 +315,6 @@ age_range = st.sidebar.slider("Select age range:", min_age, max_age, (min_age, m
 with st.spinner("Processing filters..."):
     time.sleep(0.5)
     filtered_df = apply_filters(df, selected_genders, selected_disorders, age_range).copy()
-
 
 
 # -------------------- MAIN CONTENT --------------------
@@ -402,6 +401,8 @@ st.markdown('</div>', unsafe_allow_html=True)
 with st.expander("View Filtered Raw Data"):
     st.caption("Filtered dataset preview:")
     st.dataframe(filtered_df.reset_index(drop=True), use_container_width=True)
+
+
 
 
 
