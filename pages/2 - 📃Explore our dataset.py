@@ -204,10 +204,14 @@ with st.sidebar:
     age_options = sorted(df["Age"].dropna().unique().astype(int))
     default_age_range = (min(age_options), max(age_options))
 
+    if "play_sound" not in st.session_state:
+        st.session_state["play_sound"] = False
+
     if st.button("Reset Filters"):
         st.session_state["selected_nationalities"] = []
         st.session_state["selected_genders"] = []
         st.session_state["selected_age_range"] = default_age_range
+        st.session_state["play_sound"] = True  # bật âm thanh
 
     selected_nationalities = st.multiselect(
         "Select Nationality", options=nationality_options,
@@ -229,6 +233,14 @@ with st.sidebar:
         key="selected_age_range"
     )
 
+# Phát âm thanh khi play_sound == True
+if st.session_state.get("play_sound", False):
+    st.markdown("""
+    <audio autoplay>
+        <source src="https://www.soundjay.com/buttons/sounds/button-16.mp3" type="audio/mpeg">
+    </audio>
+    """, unsafe_allow_html=True)
+    st.session_state["play_sound"] = False  # reset để không phát lại liên tục
 # ====== VARIABLE DESCRIPTION ======
 st.markdown('<hr class="custom-hr">', unsafe_allow_html=True)
 st.markdown("""
