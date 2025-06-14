@@ -226,50 +226,38 @@ df = load_data()
 if df.empty:
     st.stop()
 
-# -------------------- SIDEBAR FILTERS --------------------
+# ------------- SIDEBAR FILTERS + RESET BUTTON -----------------
 st.sidebar.title("Filters")
 
-# Initialize default values
-default_genders = df['Gender'].dropna().unique().tolist()
-default_disorders = DISORDER_ORDER
-default_age_range = (int(df['Age'].min()), int(df['Age'].max()))
-
-# Reset button
-if 'reset' not in st.session_state:
+if "reset" not in st.session_state:
     st.session_state.reset = False
 
 if st.sidebar.button("🔄 Reset Filters"):
-    st.session_state.gender_filter = []
-    st.session_state.disorder_filter = []
-    st.session_state.age_filter = default_age_range
     st.session_state.reset = True
-else:
+    st.experimental_rerun()
+
+# Default filter values
+default_genders = df['Gender'].dropna().unique().tolist()
+default_disorders = DISORDER_ORDER
+min_age, max_age = int(df['Age'].min()), int(df['Age'].max())
+default_age_range = (min_age, max_age)
+
+# Apply reset if triggered
+if st.session_state.reset:
+    selected_genders = []
+    selected_disorders = []
+    age_range = default_age_range
     st.session_state.reset = False
+else:
+    selected_genders = st.sidebar.multiselect("Select gender(s):", options=default_genders, default=[])
+    selected_disorders = st.sidebar.multiselect("Select disorder types:", options=DISORDER_ORDER, default=[])
+    age_range = st.sidebar.slider("Select age range:", min_age, max_age, (min_age, max_age))
 
-# Gender selector
-selected_genders = st.sidebar.multiselect(
-    "Select gender(s):",
-    options=default_genders,
-    default=st.session_state.get("gender_filter", [])
-)
-st.session_state.gender_filter = selected_genders
+# 🔍 Apply filters
+with st.spinner("Processing filters..."):
+    time.sleep(0.5)
+    filtered_df = apply_filters(df, selected_genders, selected_disorders, age_range).copy()
 
-# Disorder selector
-selected_disorders = st.sidebar.multiselect(
-    "Select disorder types:",
-    options=DISORDER_ORDER,
-    default=st.session_state.get("disorder_filter", [])
-)
-st.session_state.disorder_filter = selected_disorders
-
-# Age range slider
-age_range = st.sidebar.slider(
-    "Select age range:",
-    min_value=default_age_range[0],
-    max_value=default_age_range[1],
-    value=st.session_state.get("age_filter", default_age_range)
-)
-st.session_state.age_filter = age_range
 
 
 # -------------------- MAIN CONTENT --------------------
