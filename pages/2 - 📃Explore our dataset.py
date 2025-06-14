@@ -237,7 +237,7 @@ with st.sidebar:
 if st.session_state.get("play_sound", False):
     st.markdown("""
     <audio autoplay>
-        <source src="https://www.soundjay.com/buttons/sounds/button-16.mp3" type="audio/mpeg">
+        <source src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" type="audio/mpeg">
     </audio>
     """, unsafe_allow_html=True)
     st.session_state["play_sound"] = False  # reset để không phát lại liên tục
