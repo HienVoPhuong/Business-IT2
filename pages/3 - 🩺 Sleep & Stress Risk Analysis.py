@@ -47,6 +47,19 @@ def load_data():
     df['Sleep Disorder'] = df['Sleep Disorder'].fillna('None')
     return df
 
+df = load_data()
+
+# -------------------- SESSION STATE DEFAULTS --------------------
+if 'selected_genders' not in st.session_state:
+    st.session_state.selected_genders = []
+
+if 'selected_disorders' not in st.session_state:
+    st.session_state.selected_disorders = []
+
+if 'age_range' not in st.session_state:
+    st.session_state.age_range = (int(df['Age'].min()), int(df['Age'].max()))
+
+# -------------------- FILTER FUNCTIONS --------------------
 def apply_filters(data, genders, disorders, age_range):
     df = data.copy()
     if genders:
@@ -56,6 +69,7 @@ def apply_filters(data, genders, disorders, age_range):
     df = df[df['Age'].between(age_range[0], age_range[1])]
     return df
 
+# -------------------- PLOTTING --------------------
 def plot_pie_chart(data):
     counts = data['Sleep Disorder'].value_counts().reindex(DISORDER_ORDER).fillna(0)
     filtered_counts = counts[counts > 0]
@@ -114,6 +128,7 @@ def plot_ridgeline(data):
     plt.close(fig)
     return ridge_df
 
+# -------------------- ANALYSIS --------------------
 def generate_dynamic_analysis(counts, ridge_df):
     total = counts.sum()
     dominant = counts.idxmax() if total > 0 else None
@@ -193,37 +208,28 @@ def generate_demographic_insight(filtered_df):
                 insights += f"&nbsp;&nbsp;&nbsp;&nbsp;Average stress level: {colored_number(avg_stress)}<br>"
     return insights
 
-# -------------------- MAIN APP --------------------
-df = load_data()
-if df.empty:
-    st.stop()
-
 # -------------------- SIDEBAR --------------------
 st.sidebar.title("Filters")
 genders = df['Gender'].dropna().unique().tolist()
 min_age, max_age = int(df['Age'].min()), int(df['Age'].max())
 
-# ✅ FIXED: No emoji in button label
 if st.sidebar.button("Reset Filters"):
     st.session_state.selected_genders = []
     st.session_state.selected_disorders = []
     st.session_state.age_range = (min_age, max_age)
-    st.experimental_rerun()
+    st.rerun()
 
-# Widgets with state
-selected_genders = st.sidebar.multiselect("Select gender(s):", options=genders, default=st.session_state.get('selected_genders', []))
-selected_disorders = st.sidebar.multiselect("Select disorder types:", options=DISORDER_ORDER, default=st.session_state.get('selected_disorders', []))
-age_range = st.sidebar.slider("Select age range:", min_value=min_age, max_value=max_age, value=st.session_state.get('age_range', (min_age, max_age)))
+selected_genders = st.sidebar.multiselect("Select gender(s):", options=genders, default=st.session_state.selected_genders)
+selected_disorders = st.sidebar.multiselect("Select disorder types:", options=DISORDER_ORDER, default=st.session_state.selected_disorders)
+age_range = st.sidebar.slider("Select age range:", min_value=min_age, max_value=max_age, value=st.session_state.age_range)
 
-# Save to session state
 st.session_state.selected_genders = selected_genders
 st.session_state.selected_disorders = selected_disorders
 st.session_state.age_range = age_range
 
-# Apply filters
+# -------------------- MAIN --------------------
 filtered_df = apply_filters(df, selected_genders, selected_disorders, age_range)
 
-# -------------------- MAIN CONTENT --------------------
 st.markdown("""
     <div class="fade-in-section">
         <h1 style='text-align: center;
@@ -266,7 +272,7 @@ with col_b:
     </div>
     """, unsafe_allow_html=True)
 
-# -------------------- RAW DATA --------------------
 with st.expander("📄 View Filtered Raw Data"):
     st.caption("Filtered dataset preview:")
     st.dataframe(filtered_df.reset_index(drop=True), use_container_width=True)
+
