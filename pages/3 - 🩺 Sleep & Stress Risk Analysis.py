@@ -226,17 +226,54 @@ df = load_data()
 if df.empty:
     st.stop()
 
-# -------------------- SIDEBAR FILTERS --------------------
+# ------------- SIDEBAR FILTERS + RESET BUTTON -----------------
+# ------------- SIDEBAR FILTERS + RESET BUTTON -----------------
 st.sidebar.title("Filters")
-genders = df['Gender'].dropna().unique().tolist()
-selected_genders = st.sidebar.multiselect("Select gender(s):", options=genders, default=[])
-selected_disorders = st.sidebar.multiselect("Select disorder types:", options=DISORDER_ORDER, default=[])
-min_age, max_age = int(df['Age'].min()), int(df['Age'].max())
-age_range = st.sidebar.slider("Select age range:", min_age, max_age, (min_age, max_age))
 
-with st.spinner("Processing filters..."):
-    time.sleep(0.5)
-    filtered_df = apply_filters(df, selected_genders, selected_disorders, age_range).copy()
+# Default filter values
+default_genders = df['Gender'].dropna().unique().tolist()
+default_disorders = DISORDER_ORDER
+min_age, max_age = int(df['Age'].min()), int(df['Age'].max())
+default_age_range = (min_age, max_age)
+
+# Initialize session state values
+if "selected_genders" not in st.session_state:
+    st.session_state.selected_genders = []
+if "selected_disorders" not in st.session_state:
+    st.session_state.selected_disorders = []
+if "age_range" not in st.session_state:
+    st.session_state.age_range = default_age_range
+
+# Reset button
+if st.sidebar.button("🔄 Reset Filters"):
+    st.session_state.selected_genders = []
+    st.session_state.selected_disorders = []
+    st.session_state.age_range = default_age_range
+    st.rerun()
+
+# Sidebar inputs linked to session state
+selected_genders = st.sidebar.multiselect(
+    "Select gender(s):",
+    options=default_genders,
+    default=st.session_state.selected_genders,
+    key="selected_genders"
+)
+
+selected_disorders = st.sidebar.multiselect(
+    "Select disorder types:",
+    options=DISORDER_ORDER,
+    default=st.session_state.selected_disorders,
+    key="selected_disorders"
+)
+
+age_range = st.sidebar.slider(
+    "Select age range:",
+    min_value=min_age,
+    max_value=max_age,
+    value=st.session_state.age_range,
+    key="age_range"
+)
+
 
 # -------------------- MAIN CONTENT --------------------
 st.markdown('''
@@ -312,5 +349,4 @@ st.markdown('</div>', unsafe_allow_html=True)
 # -------------------- RAW DATA --------------------
 with st.expander("View Filtered Raw Data"):
     st.caption("Filtered dataset preview:")
-    st.dataframe(filtered_df.reset_index(drop=True), use_container_width=True)
-
+    st.dataframe(filtered_df.reset_index(drop=True), use_container_width=True) 
