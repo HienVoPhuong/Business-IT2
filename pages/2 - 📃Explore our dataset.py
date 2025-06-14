@@ -231,24 +231,7 @@ with st.sidebar:
         max_value=default_age_range[1],
         value=st.session_state.get("selected_age_range", default_age_range),
         key="selected_age_range"
-    )
-
-
-if st.session_state.get("play_sound", False):
-    st.markdown("""
-    <audio id="click-audio" autoplay>
-        <source src="https://www.myinstants.com/media/sounds/mouse-click.mp3" type="audio/mpeg">
-    </audio>
-    <script>
-    const audio = document.getElementById("click-audio");
-    if (audio) {
-        audio.playbackRate = 3.0;
-        audio.play();
-    }
-    </script>
-    """, unsafe_allow_html=True)
-    st.session_state["play_sound"] = False 
-    
+    )    
 # ====== VARIABLE DESCRIPTION ======
 st.markdown('<hr class="custom-hr">', unsafe_allow_html=True)
 st.markdown("""
