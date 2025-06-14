@@ -15,6 +15,15 @@ st.markdown("""
        h1, h2, h3, h4, h5, h6, p, span, div, label, section, input, textarea, select {
            font-family: 'Merriweather', serif !important;
        }
+       .stButton>button,
+       .stTextInput>div>input,
+       .stSelectbox>div>div,
+       .stMultiSelect>div>div,
+       .stSlider,
+       .stSlider>div>div,
+       .stSlider>div>div>div {
+           font-family: 'Merriweather', serif !important;
+       }
    </style>
 """, unsafe_allow_html=True)
 
@@ -35,6 +44,13 @@ st.markdown("""
         }
         .insight-box {
             transition: all 0.3s ease;
+        }
+        .stDataFrame thead tr th {
+            background-color: #f0f2f6;
+            color: #333;
+        }
+        .stDataFrame tbody tr:hover {
+            background-color: #f6f6f6;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -121,7 +137,7 @@ def plot_ridgeline(data):
     plt.close(fig)
     return ridge_df
 
-# -------------------- INTERPRETATION GENERATORS --------------------
+# -------------------- INTERPRETATION GENERATOR --------------------
 def generate_dynamic_analysis(counts, ridge_df):
     total = counts.sum()
     dominant = counts.idxmax() if total > 0 else None
@@ -140,10 +156,13 @@ def generate_dynamic_analysis(counts, ridge_df):
             return f'<span style="color:{color}; font-weight:bold;">{val:.2f}</span>'
         except:
             return f'<span style="color:gray;">N/A</span>'
-    pie_summary = (
-        f"The most common sleep condition in the selected group is "
-        f"{badge(dominant, BADGE_COLOR.get(dominant, '#ccc'))}, based on the filtered data."
-    ) if total > 0 else "No data available for current filter selection."
+    if total == 0:
+        pie_summary = "No data available for current filter selection."
+    else:
+        pie_summary = (
+            f"The most common sleep condition in the selected group is "
+            f"{badge(dominant, BADGE_COLOR.get(dominant, '#ccc'))}, based on the filtered data."
+        )
     if ridge_df.empty:
         ridge_summary = "Stress level distribution is not available for the current filters."
     else:
@@ -156,6 +175,7 @@ def generate_dynamic_analysis(counts, ridge_df):
         )
     return pie_summary, ridge_summary
 
+# -------------------- DEMOGRAPHIC INSIGHT GENERATOR --------------------
 def generate_demographic_insight(filtered_df):
     insights = ""
     BADGE_COLOR = COLOR_MAP
@@ -209,39 +229,17 @@ if df.empty:
 # -------------------- SIDEBAR FILTERS --------------------
 st.sidebar.title("Filters")
 genders = df['Gender'].dropna().unique().tolist()
+selected_genders = st.sidebar.multiselect("Select gender(s):", options=genders, default=[])
+selected_disorders = st.sidebar.multiselect("Select disorder types:", options=DISORDER_ORDER, default=[])
 min_age, max_age = int(df['Age'].min()), int(df['Age'].max())
+age_range = st.sidebar.slider("Select age range:", min_age, max_age, (min_age, max_age))
 
-# Reset button
-if st.sidebar.button("🔄 Reset Filters"):
-    st.session_state.selected_genders = []
-    st.session_state.selected_disorders = []
-    st.session_state.age_range = (min_age, max_age)
-    st.experimental_rerun()
-
-# Widgets with session state
-selected_genders = st.sidebar.multiselect(
-    "Select gender(s):", options=genders,
-    default=st.session_state.get('selected_genders', [])
-)
-selected_disorders = st.sidebar.multiselect(
-    "Select disorder types:", options=DISORDER_ORDER,
-    default=st.session_state.get('selected_disorders', [])
-)
-age_range = st.sidebar.slider(
-    "Select age range:", min_value=min_age, max_value=max_age,
-    value=st.session_state.get('age_range', (min_age, max_age))
-)
-
-# Save to session state
-st.session_state.selected_genders = selected_genders
-st.session_state.selected_disorders = selected_disorders
-st.session_state.age_range = age_range
-
-# Apply filters
-filtered_df = apply_filters(df, selected_genders, selected_disorders, age_range)
+with st.spinner("Processing filters..."):
+    time.sleep(0.5)
+    filtered_df = apply_filters(df, selected_genders, selected_disorders, age_range).copy()
 
 # -------------------- MAIN CONTENT --------------------
-st.markdown("""
+st.markdown('''
     <div class="fade-in-section">
         <h1 style='text-align: center;
                    background: -webkit-linear-gradient(45deg, #6C63FF, #20B2AA);
@@ -250,43 +248,71 @@ st.markdown("""
                    font-weight: 800;
                    font-size: 2.5em;'>Sleep Disorders & Stress Level Analysis</h1>
     </div>
-""", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; font-size:18px;'>Visualizing the proportion of sleep disorders and how stress levels distribute across them.</p>", unsafe_allow_html=True)
+''', unsafe_allow_html=True)
+st.markdown(
+    "<p style='text-align: center; font-size:18px;'>Visualizing the proportion of sleep disorders and how stress levels distribute across them.</p>", 
+    unsafe_allow_html=True
+)
 
 col1, col2 = st.columns(2)
 with col1:
     with st.spinner("Loading sleep disorder chart..."):
+        time.sleep(0.8)
+        st.markdown('<div class="fade-in-section">', unsafe_allow_html=True)
+        st.subheader("Sleep Disorder Proportion")
         disorder_counts = plot_pie_chart(filtered_df)
+        st.markdown('</div>', unsafe_allow_html=True)
 
 with col2:
     with st.spinner("Generating stress level plot..."):
+        time.sleep(0.8)
+        st.markdown('<div class="fade-in-section">', unsafe_allow_html=True)
+        st.subheader("Stress Level Distribution by Disorder")
         ridge_data = plot_ridgeline(filtered_df)
+        st.markdown('</div>', unsafe_allow_html=True)
 
+# -------------------- INTERPRETATION --------------------
 pie_en, ridge_en = generate_dynamic_analysis(disorder_counts, ridge_data)
 demographic_en = generate_demographic_insight(filtered_df)
 
 st.markdown("---")
+st.markdown('<div class="fade-in-section">', unsafe_allow_html=True)
 st.subheader("Analytical Summary")
+st.markdown("This analytical summary is displayed based on the chosen filter criteria")
 col_a, col_b = st.columns(2)
 
 with col_a:
-    st.markdown(f"""
-    <div class="insight-box" style="padding:20px; background-color:#f9f9f9; border-left: 5px solid #6C63FF; border-radius:10px;">
-        <h3 style="margin-top:0; color:#333;">General Insights</h3>
-        <p>{pie_en}</p>
-        <p>{ridge_en}</p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(
+        f"""
+        <div class="insight-box" style="padding:20px; background-color:#f9f9f9; border-left: 5px solid #6C63FF; border-radius:10px; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.05);">
+            <h3 style="margin-top:0; color:#333;">General Insights</h3>
+            <p style="font-size:16px;">{pie_en}</p>
+            <p style="font-size:16px;">{ridge_en}</p>
+            <hr style="margin:15px 0;">
+            <p style="font-size:14px;"><strong>Stress Level Legend:</strong><br>
+                <span style="color:#668fd4; font-weight:bold;">Low &lt; 5</span> |
+                <span style="color:#fa9850; font-weight:bold;">Moderate 5 - 6.99</span> |
+                <span style="color:#e4444e; font-weight:bold;">High ≥ 7</span>
+            </p>
+        </div>
+        """, unsafe_allow_html=True
+    )
 
 with col_b:
-    st.markdown(f"""
-    <div class="insight-box" style="padding:20px; background-color:white; border-left: 5px solid #20B2AA; border-radius:10px;">
-        <h3 style="margin-top:0; color:#333;">Demographic Patterns</h3>
-        <p>{demographic_en}</p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(
+        f"""
+        <div class="insight-box" style="padding:20px; background-color:white; border-left: 5px solid #20B2AA; border-radius:10px; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.05);">
+            <h3 style="margin-top:0; color:#333;">Demographic Patterns</h3>
+            <p style="font-size:16px;">{demographic_en}</p>
+        </div>
+        """, unsafe_allow_html=True
+    )
+st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------- RAW DATA --------------------
-with st.expander("📄 View Filtered Raw Data"):
+with st.expander("View Filtered Raw Data"):
     st.caption("Filtered dataset preview:")
     st.dataframe(filtered_df.reset_index(drop=True), use_container_width=True)
+
+
+
