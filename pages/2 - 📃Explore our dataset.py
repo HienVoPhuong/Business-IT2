@@ -40,8 +40,8 @@ h1, h2, h3, h4, h5, h6, p, li, div, span, label,
 /* Fade-in Animation */
 .fade-in {
     opacity: 0;
-    animation: fadeIn ease 2.5s;
-    animation-fill-mode: forwards;
+    animation: fadeIn ease 3s;
+    animation-fill-mode: left;
 }
 @keyframes fadeIn {
     0%   { opacity: 0; transform: translateY(30px); }
