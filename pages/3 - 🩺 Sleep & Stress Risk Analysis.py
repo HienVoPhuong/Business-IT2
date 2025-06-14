@@ -229,17 +229,15 @@ if df.empty:
 # ---------------- SIDEBAR FILTERS + RESET BUTTON ----------------
 st.sidebar.title("Filters")
 
-# Default filter values
 default_genders = df['Gender'].dropna().unique().tolist()
 default_disorders = DISORDER_ORDER
 min_age, max_age = int(df['Age'].min()), int(df['Age'].max())
 default_age_range = (min_age, max_age)
 
-# Initialize session state values (only if not present)
 if "selected_genders" not in st.session_state:
-    st.session_state.selected_genders = []  # Không chọn gì lúc đầu
+    st.session_state.selected_genders = [] 
 if "selected_disorders" not in st.session_state:
-    st.session_state.selected_disorders = []  # Không chọn gì lúc đầu
+    st.session_state.selected_disorders = [] 
 if "age_range" not in st.session_state:
     st.session_state.age_range = default_age_range
 
@@ -250,7 +248,6 @@ if st.sidebar.button("🔄 Reset Filters"):
     st.session_state.age_range = default_age_range
     st.rerun()
 
-# Sidebar inputs linked to session state, không chọn sẵn giá trị
 st.sidebar.multiselect(
     "Select gender(s):",
     options=default_genders,
@@ -276,7 +273,6 @@ st.sidebar.slider(
 # Áp dụng filter theo session_state
 with st.spinner("Processing filters..."):
     time.sleep(0.5)
-    # Nếu filter rỗng (gender hoặc disorder), thì không lọc theo trường đó
     filtered_df = df.copy()
     if st.session_state.selected_genders:
         filtered_df = filtered_df[filtered_df['Gender'].isin(st.session_state.selected_genders)]
@@ -331,7 +327,7 @@ with col_a:
     st.markdown(
         f"""
         <div class="insight-box" style="padding:20px; background-color:#f9f9f9; border-left: 5px solid #6C63FF; border-radius:10px; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.05);">
-            <h3 style="margin-top:0; color:#333;">General Insights</h3>
+            <h3 style="margin-top:0; color:#333;">📊General Insights</h3>
             <p style="font-size:16px;">{pie_en}</p>
             <p style="font-size:16px;">{ridge_en}</p>
             <hr style="margin:15px 0;">
@@ -348,7 +344,7 @@ with col_b:
     st.markdown(
         f"""
         <div class="insight-box" style="padding:20px; background-color:white; border-left: 5px solid #20B2AA; border-radius:10px; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.05);">
-            <h3 style="margin-top:0; color:#333;">Demographic Patterns</h3>
+            <h3 style="margin-top:0; color:#333;">👥Demographic Patterns</h3>
             <p style="font-size:16px;">{demographic_en}</p>
         </div>
         """, unsafe_allow_html=True
