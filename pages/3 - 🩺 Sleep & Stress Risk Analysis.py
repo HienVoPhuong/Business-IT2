@@ -5,16 +5,24 @@ import numpy as np
 import joypy
 import time
 
+
 # -------------------- PAGE CONFIG --------------------
 st.markdown("""
    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
    <style>
+     
        html, body, [class*="st-"], .stApp, .stSidebar, .stSidebarContent {
            font-family: 'Merriweather', serif !important;
        }
+
+
+      
        h1, h2, h3, h4, h5, h6, p, span, div, label, section, input, textarea, select {
            font-family: 'Merriweather', serif !important;
        }
+
+
+      
        .stButton>button,
        .stTextInput>div>input,
        .stSelectbox>div>div,
@@ -27,47 +35,57 @@ st.markdown("""
    </style>
 """, unsafe_allow_html=True)
 
-# -------------------- AOS LIBRARY --------------------
-st.markdown("""
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            AOS.init({ duration: 1000 });
-        });
-    </script>
-""", unsafe_allow_html=True)
 
 # -------------------- CUSTOM CSS EFFECT --------------------
 st.markdown("""
     <style>
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translate3d(0, 20px, 0); }
-            to { opacity: 1; transform: none; }
+            from {
+                opacity: 0;
+                transform: translate3d(0, 20px, 0);
+            }
+            to {
+                opacity: 1;
+                transform: none;
+            }
         }
-        .fade-in-section { animation: fadeInUp 0.8s ease-in-out; }
+
+
+        .fade-in-section {
+            animation: fadeInUp 0.8s ease-in-out;
+        }
+
+
         .insight-box:hover {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             transform: translateY(-4px);
             transition: all 0.3s ease;
         }
+
+
         .insight-box {
             transition: all 0.3s ease;
         }
+
+
         .stDataFrame thead tr th {
             background-color: #f0f2f6;
             color: #333;
         }
+
+
         .stDataFrame tbody tr:hover {
             background-color: #f6f6f6;
         }
     </style>
 """, unsafe_allow_html=True)
 
+
 # -------------------- CONSTANTS --------------------
 DISORDER_ORDER = ['Sleep Apnea', 'Insomnia', 'None']
 COLOR_MAP = {'Sleep Apnea': '#E6A1B3', 'Insomnia': '#E66A6A', 'None': '#D8BFD8'}
 RIDGE_COLOR_MAP = {'Sleep Apnea': '#A7C7E7', 'Insomnia': '#FFD1A9', 'None': '#E66A6A'}
+
 
 # -------------------- DATA LOADING --------------------
 @st.cache_data
@@ -75,6 +93,7 @@ def load_data():
     df = pd.read_excel("Sleep Health Lifestyle Dataset.xlsx")
     df['Sleep Disorder'] = df['Sleep Disorder'].fillna('None')
     return df
+
 
 # -------------------- FILTER FUNCTION --------------------
 def apply_filters(data, genders, disorders, age_range):
@@ -84,17 +103,21 @@ def apply_filters(data, genders, disorders, age_range):
         (data['Age'].between(age_range[0], age_range[1]))
     ]
 
+
 # -------------------- PIE CHART FUNCTION --------------------
 def plot_pie_chart(data):
     counts = data['Sleep Disorder'].value_counts().reindex(DISORDER_ORDER).fillna(0)
     filtered_counts = counts[counts > 0]
 
+
     if filtered_counts.empty:
         st.warning("No data for the selected filters.")
         return counts
 
+
     if len(filtered_counts) == 1:
         st.info(f"Only one disorder selected: **{filtered_counts.index[0]}** (100%).")
+
 
     fig, ax = plt.subplots(figsize=(6, 6))
     wedges, _, _ = ax.pie(
@@ -106,6 +129,7 @@ def plot_pie_chart(data):
         wedgeprops={'edgecolor': 'white', 'linewidth': 1.5},
         pctdistance=0.8
     )
+
 
     for i, wedge in enumerate(wedges):
         ang = (wedge.theta2 + wedge.theta1) / 2
@@ -121,10 +145,12 @@ def plot_pie_chart(data):
             arrowprops=dict(arrowstyle="-", color="gray")
         )
 
+
     ax.axis('equal')
     st.pyplot(fig)
     plt.close(fig)
     return counts
+
 
 # -------------------- RIDGELINE PLOT FUNCTION --------------------
 def plot_ridgeline(data):
@@ -132,9 +158,11 @@ def plot_ridgeline(data):
     valid_disorders = valid_counts[valid_counts > 1].index.tolist()
     ridge_df = data[data['Sleep Disorder'].isin(valid_disorders)].dropna(subset=['Stress Level'])
 
+
     if not valid_disorders or ridge_df.empty:
         st.info("Not enough data to show ridgeline plot.")
         return ridge_df
+
 
     fig, _ = joypy.joyplot(
         ridge_df,
@@ -151,14 +179,19 @@ def plot_ridgeline(data):
     plt.close(fig)
     return ridge_df
 
+
 # -------------------- INTERPRETATION GENERATOR --------------------
 def generate_dynamic_analysis(counts, ridge_df):
     total = counts.sum()
     dominant = counts.idxmax() if total > 0 else None
+
+
     BADGE_COLOR = COLOR_MAP
+
 
     def badge(text, color="#FFD700"):
         return f'<span style="background-color:{color}; color:black; padding:3px 8px; border-radius:8px; font-size:13px;">{text}</span>'
+
 
     def colored_number(value):
         try:
@@ -173,10 +206,15 @@ def generate_dynamic_analysis(counts, ridge_df):
         except:
             return f'<span style="color:gray;">N/A</span>'
 
-    pie_summary = (
-        f"The most common sleep condition in the selected group is "
-        f"{badge(dominant, BADGE_COLOR.get(dominant, '#ccc'))}, based on the filtered data."
-    ) if total > 0 else "No data available for current filter selection."
+
+    if total == 0:
+        pie_summary = "No data available for current filter selection."
+    else:
+        pie_summary = (
+            f"The most common sleep condition in the selected group is "
+            f"{badge(dominant, BADGE_COLOR.get(dominant, '#ccc'))}, based on the filtered data."
+        )
+
 
     if ridge_df.empty:
         ridge_summary = "Stress level distribution is not available for the current filters."
@@ -189,15 +227,19 @@ def generate_dynamic_analysis(counts, ridge_df):
             f"{colored_number(highest_val)}."
         )
 
+
     return pie_summary, ridge_summary
+
 
 # -------------------- DEMOGRAPHIC INSIGHT GENERATOR --------------------
 def generate_demographic_insight(filtered_df):
     insights = ""
     BADGE_COLOR = COLOR_MAP
 
+
     def badge(text, color="#FFD700"):
         return f'<span style="background-color:{color}; color:black; padding:3px 8px; border-radius:8px; font-size:13px;">{text}</span>'
+
 
     def colored_number(value):
         try:
@@ -212,40 +254,55 @@ def generate_demographic_insight(filtered_df):
         except:
             return f'<span style="color:gray;">N/A</span>'
 
+
     if 'Gender' in filtered_df.columns and not filtered_df.empty:
         gender_groups = filtered_df.groupby('Gender', observed=False)
         insights += "<strong>🔸Gender-Based Observations</strong><br><br>"
+
+
         for gender, group in gender_groups:
             disorder_ratio = group['Sleep Disorder'].value_counts(normalize=True) * 100
             dominant_disorder = disorder_ratio.idxmax()
             stress_mean = group['Stress Level'].mean() if 'Stress Level' in group.columns else None
+
+
             insights += f"- Among <strong>{gender}</strong>, the most common sleep condition is {badge(dominant_disorder, BADGE_COLOR.get(dominant_disorder, '#ccc'))}.<br>"
             if stress_mean:
                 insights += f"&nbsp;&nbsp;&nbsp;&nbsp;Average stress level: {colored_number(stress_mean)}<br>"
+
 
     if 'Age' in filtered_df.columns:
         age_bins = [0, 25, 40, 60, 100]
         age_labels = ["<25", "25-40", "40-60", "60+"]
         filtered_df = filtered_df.copy()
         filtered_df['Age Group'] = pd.cut(filtered_df['Age'], bins=age_bins, labels=age_labels)
+
+
         insights += "<br><strong>🔸Age Group Insights</strong><br><br>"
         age_groups = filtered_df.groupby('Age Group', observed=False)
+
+
         for label, group in age_groups:
             if group.empty:
                 continue
             disorder_counts = group['Sleep Disorder'].value_counts(normalize=True) * 100
             top_disorder = disorder_counts.idxmax()
             avg_stress = group['Stress Level'].mean() if 'Stress Level' in group.columns else None
+
+
             insights += f"- In the <strong>{label}</strong> age group, {badge(top_disorder, BADGE_COLOR.get(top_disorder, '#ccc'))} is most common.<br>"
             if avg_stress:
                 insights += f"&nbsp;&nbsp;&nbsp;&nbsp;Average stress level: {colored_number(avg_stress)}<br>"
 
+
     return insights
+
 
 # -------------------- MAIN APP --------------------
 df = load_data()
 if df.empty:
     st.stop()
+
 
 # -------------------- SIDEBAR FILTERS --------------------
 st.sidebar.title("Filters")
@@ -255,9 +312,11 @@ selected_disorders = st.sidebar.multiselect("Select disorder types:", options=DI
 min_age, max_age = int(df['Age'].min()), int(df['Age'].max())
 age_range = st.sidebar.slider("Select age range:", min_age, max_age, (min_age, max_age))
 
+
 with st.spinner("Processing filters..."):
     time.sleep(0.5)
     filtered_df = apply_filters(df, selected_genders, selected_disorders, age_range).copy()
+
 
 # -------------------- MAIN CONTENT --------------------
 st.markdown('''
@@ -275,7 +334,9 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+
 col1, col2 = st.columns(2)
+
 
 with col1:
     with st.spinner("Loading sleep disorder chart..."):
@@ -285,6 +346,7 @@ with col1:
         disorder_counts = plot_pie_chart(filtered_df)
         st.markdown('</div>', unsafe_allow_html=True)
 
+
 with col2:
     with st.spinner("Generating stress level plot..."):
         time.sleep(0.8)
@@ -293,9 +355,11 @@ with col2:
         ridge_data = plot_ridgeline(filtered_df)
         st.markdown('</div>', unsafe_allow_html=True)
 
+
 # -------------------- INTERPRETATION --------------------
 pie_en, ridge_en = generate_dynamic_analysis(disorder_counts, ridge_data)
 demographic_en = generate_demographic_insight(filtered_df)
+
 
 st.markdown("---")
 st.markdown('<div class="fade-in-section">', unsafe_allow_html=True)
@@ -303,11 +367,11 @@ st.subheader("Analytical Summary")
 st.markdown("This analytical summary is displayed based on the chosen filter criteria")
 col_a, col_b = st.columns(2)
 
+
 with col_a:
     st.markdown(
         f"""
-        <div class="insight-box" data-aos="fade-right"
-             style="padding:20px; background-color:#f9f9f9; border-left: 5px solid #6C63FF; border-radius:10px; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.05);">
+        <div class="insight-box" style="padding:20px; background-color:#f9f9f9; border-left: 5px solid #6C63FF; border-radius:10px; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.05);">
             <h3 style="margin-top:0; color:#333;">General Insights</h3>
             <p style="font-size:16px;">{pie_en}</p>
             <p style="font-size:16px;">{ridge_en}</p>
@@ -321,11 +385,11 @@ with col_a:
         """, unsafe_allow_html=True
     )
 
+
 with col_b:
     st.markdown(
         f"""
-        <div class="insight-box" data-aos="fade-left"
-             style="padding:20px; background-color:white; border-left: 5px solid #20B2AA; border-radius:10px; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.05);">
+        <div class="insight-box" style="padding:20px; background-color:white; border-left: 5px solid #20B2AA; border-radius:10px; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.05);">
             <h3 style="margin-top:0; color:#333;">Demographic Patterns</h3>
             <p style="font-size:16px;">{demographic_en}</p>
         </div>
@@ -333,7 +397,15 @@ with col_b:
     )
 st.markdown('</div>', unsafe_allow_html=True)
 
+
 # -------------------- RAW DATA --------------------
 with st.expander("View Filtered Raw Data"):
     st.caption("Filtered dataset preview:")
     st.dataframe(filtered_df.reset_index(drop=True), use_container_width=True)
+
+
+
+
+
+
+
