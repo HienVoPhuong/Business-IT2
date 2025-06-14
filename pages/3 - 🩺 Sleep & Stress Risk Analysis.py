@@ -227,7 +227,6 @@ if df.empty:
     st.stop()
 
 # ------------- SIDEBAR FILTERS + RESET BUTTON -----------------
-# ------------- SIDEBAR FILTERS + RESET BUTTON -----------------
 st.sidebar.title("Filters")
 
 # Default filter values
@@ -273,7 +272,9 @@ age_range = st.sidebar.slider(
     value=st.session_state.age_range,
     key="age_range"
 )
-
+with st.spinner("Processing filters..."):
+    time.sleep(0.5)
+    filtered_df = apply_filters(df, selected_genders, selected_disorders, age_range).copy()
 
 # -------------------- MAIN CONTENT --------------------
 st.markdown('''
