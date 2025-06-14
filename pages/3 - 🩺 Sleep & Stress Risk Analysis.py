@@ -231,7 +231,6 @@ st.sidebar.title("Filters")
 genders = df['Gender'].dropna().unique().tolist()
 min_age, max_age = int(df['Age'].min()), int(df['Age'].max())
 
-# --- Reset Button ---
 if 'reset' not in st.session_state:
     st.session_state['reset'] = False
 
