@@ -229,10 +229,25 @@ if df.empty:
 # -------------------- SIDEBAR FILTERS --------------------
 st.sidebar.title("Filters")
 genders = df['Gender'].dropna().unique().tolist()
-selected_genders = st.sidebar.multiselect("Select gender(s):", options=genders, default=[])
-selected_disorders = st.sidebar.multiselect("Select disorder types:", options=DISORDER_ORDER, default=[])
 min_age, max_age = int(df['Age'].min()), int(df['Age'].max())
-age_range = st.sidebar.slider("Select age range:", min_age, max_age, (min_age, max_age))
+
+# --- Reset Button ---
+if 'reset' not in st.session_state:
+    st.session_state['reset'] = False
+
+if st.sidebar.button("🔄 Reset Filters"):
+    st.session_state['reset'] = True
+    st.experimental_rerun()
+
+if st.session_state['reset']:
+    selected_genders = []
+    selected_disorders = []
+    age_range = (min_age, max_age)
+    st.session_state['reset'] = False
+else:
+    selected_genders = st.sidebar.multiselect("Select gender(s):", options=genders, default=[])
+    selected_disorders = st.sidebar.multiselect("Select disorder types:", options=DISORDER_ORDER, default=[])
+    age_range = st.sidebar.slider("Select age range:", min_age, max_age, (min_age, max_age))
 
 with st.spinner("Processing filters..."):
     time.sleep(0.5)
@@ -313,5 +328,3 @@ st.markdown('</div>', unsafe_allow_html=True)
 with st.expander("View Filtered Raw Data"):
     st.caption("Filtered dataset preview:")
     st.dataframe(filtered_df.reset_index(drop=True), use_container_width=True)
-
-
