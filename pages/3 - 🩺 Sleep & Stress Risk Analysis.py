@@ -353,5 +353,5 @@ st.markdown('</div>', unsafe_allow_html=True)
 # -------------------- RAW DATA --------------------
 with st.expander("View Filtered Raw Data"):
     st.caption("Filtered dataset preview:")
-    st.dataframe(filtered_df.reset_index(drop=True), use_container_width=True) 
+    st.dataframe(filtered_df.reset_index(drop=True).rename(lambda x: x + 1), use_container_width=True)
 
