@@ -289,4 +289,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.dataframe(filtered_df.reset_index(drop=True), use_container_width=True)
+filtered_df = filtered_df.reset_index(drop=True)
+filtered_df.index += 1  
+st.dataframe(filtered_df, use_container_width=True)
