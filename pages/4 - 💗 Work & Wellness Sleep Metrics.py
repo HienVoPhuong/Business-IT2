@@ -308,9 +308,8 @@ with col_b:
 
 # -------------------- RAW DATA --------------------
 with st.expander("View Filtered Raw Data"):
-   st.caption("Filtered dataset preview:")
-   df_to_show = filtered_df.reset_index(drop=True)
-df_to_show.index += 1
-st.dataframe(df_to_show, use_container_width=True)
-
+    st.caption("Filtered dataset preview:")
+    df_to_show = filtered_df.reset_index(drop=True)
+    df_to_show.index += 1
+    st.dataframe(df_to_show, use_container_width=True)
 
